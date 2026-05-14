@@ -1,157 +1,91 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { MacTrafficLights } from "../components/PageKit.jsx";
+import { Info, FolderKanban, UserRound, ClipboardList } from "lucide-react";
 
-const quickLinks = [
-  { to: "/intro", title: "ABOUT", caption: "소개" },
-  { to: "/projects", title: "PROJECTS", caption: "프로젝트" },
-  { to: "/profile", title: "MEMBERS", caption: "프로필" },
-  { to: "/apply", title: "APPLY", caption: "신청" },
-];
-
-const activityCards = [
-  { title: "동아리 소개", label: "ABOUT" },
-  { title: "주요 활동", label: "ACTIVITY" },
-  { title: "모집 파트", label: "PART" },
-];
-
-function StatusRow({ label, value, text, muted }) {
-  return (
-    <div className="status-row">
-      <strong>{label}</strong>
-      <span className="progress-meter" aria-hidden="true">
-        <span style={{ width: value }} />
-        {muted && <i />}
-      </span>
-      <em>{text}</em>
-    </div>
-  );
-}
-
-function ActivityCard({ item }) {
-  const [isClosed, setIsClosed] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
-
-  if (isClosed) {
-    return (
-      <button className="panel-restore mini-restore" type="button" onClick={() => setIsClosed(false)}>
-        <MacTrafficLights />
-        <span>{item.title}</span>
-      </button>
-    );
-  }
-
-  return (
-    <article className={`info-card${isCollapsed ? " is-collapsed" : ""}${isZoomed ? " is-zoomed" : ""}`}>
-      <span className="mini-card-bar">
-        <MacTrafficLights
-          interactive
-          onClose={() => setIsClosed(true)}
-          onMinimize={() => setIsCollapsed((value) => !value)}
-          onZoom={() => setIsZoomed((value) => !value)}
-          minimizeLabel={isCollapsed ? "펼치기" : "접기"}
-          zoomLabel={isZoomed ? "축소" : "확대"}
-        />
-      </span>
-      {!isCollapsed && (
-        <Link className="info-card-content" to="/intro">
-          <small>{item.label}</small>
-          <strong>{item.title}</strong>
-          <p>??</p>
-        </Link>
-      )}
-    </article>
-  );
-}
-
-function MissionPanel() {
-  const [isClosed, setIsClosed] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
-
-  if (isClosed) {
-    return (
-      <button className="panel-restore mission-restore" type="button" onClick={() => setIsClosed(false)}>
-        <MacTrafficLights />
-        <strong>MISSION LOG</strong>
-        <span>다시 열기</span>
-      </button>
-    );
-  }
-
-  return (
-    <div className={`hero-panel${isCollapsed ? " is-collapsed" : ""}${isZoomed ? " is-zoomed" : ""}`}>
-      <div className="info-panel-header">
-        <div className="window-title-group">
-          <MacTrafficLights
-            interactive
-            onClose={() => setIsClosed(true)}
-            onMinimize={() => setIsCollapsed((value) => !value)}
-            onZoom={() => setIsZoomed((value) => !value)}
-            minimizeLabel={isCollapsed ? "펼치기" : "접기"}
-            zoomLabel={isZoomed ? "축소" : "확대"}
-          />
-          <span>MISSION LOG</span>
-        </div>
-        <strong>??</strong>
-      </div>
-      {!isCollapsed && (
-        <div className="info-panel-body">
-          {activityCards.map((item) => (
-            <ActivityCard item={item} key={item.title} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+// const homeLinks = [
+//   { to: "/intro", label: "소개", sub: "About", icon: Info },
+//   { to: "/projects", label: "프로젝트", sub: "Projects", icon: FolderKanban },
+//   { to: "/profile", label: "멤버", sub: "Members", icon: UserRound },
+//   { to: "/apply", label: "지원", sub: "Apply", icon: ClipboardList },
+// ];
 
 export default function Home() {
   return (
-    <div className="home-page">
-      <section className="hero-section">
-        <div className="hero-copy">
-          <p className="hero-kicker">
-            <span>&gt;</span> LIKELION × ?? UNIVERSITY × ?TH
-          </p>
-          <h1 className="hero-title">
-            <span>BUILD</span>
-            <span>YOUR</span>
-            <span>WORLD</span>
-          </h1>
-          <p className="hero-subtitle">당신의 세계를 만드는 동아리</p>
+    <>
+    <section className="file-home-hero" aria-label="전북대학교 멋쟁이사자처럼 홈 인트로">
+      <div className="file-home-copy">
+        <div className="file-hero-eyebrow">LIKELION × JBNU × 14TH</div>
+        <h1 className="file-hero-title">
+          <span>BUILD</span> YOUR
+          <br />
+          <em>WORLD</em>
+        </h1>
+        <p className="file-hero-slogan">
+          <span>당신의 세계를</span> 만드는 동아리
+        </p>
 
-          <div className="status-list" aria-label="동아리 상태">
-            <StatusRow label="PASSION" value="100%" text="100%" />
-            <StatusRow label="SKILL" value="50%" text="50%++" muted />
-            <StatusRow label="NETWORK" value="100%" text="전국" />
+        <div className="hp-area" aria-label="활동 상태">
+          <div className="hp-row">
+            <span className="hp-lbl">PASSION</span>
+            <span className="hp-bar">████████████████</span>
+            <span className="hp-pct">100%</span>
           </div>
-
-          <div className="hero-actions">
-            <Link className="hero-button primary" to="/apply">
-              <span>▶</span>
-              지원하기
-            </Link>
-            <Link className="hero-button secondary" to="/intro">
-              <span>▼</span>
-              더 알아보기
-            </Link>
+          <div className="hp-row">
+            <span className="hp-lbl">SKILL</span>
+            <span className="hp-bar">████████░░░░░░░░</span>
+            <span className="hp-pct">50%→∞</span>
+          </div>
+          <div className="hp-row">
+            <span className="hp-lbl">NETWORK</span>
+            <span className="hp-bar">████████████████</span>
+            <span className="hp-pct">전국</span>
           </div>
         </div>
 
-        <MissionPanel />
-      </section>
-
-      <section className="quick-grid" aria-label="바로가기">
-        {quickLinks.map((item) => (
-          <Link className="quick-card" key={item.to} to={item.to}>
-            <span>{item.title}</span>
-            <strong>{item.caption}</strong>
-            <small>??</small>
+        <div className="file-hero-actions">
+          <Link className="pixel-button primary" to="/apply">
+            ▶ 지원하기
           </Link>
-        ))}
-      </section>
-    </div>
+          <Link className="pixel-button ghost" to="/intro">
+            ▼ 더 알아보기
+          </Link>
+        </div>
+      </div>
+
+      <aside className="pixel-terminal" aria-label="전북대 멋사 현황 터미널">
+        <div className="pixel-terminal-bar">
+          <span className="tb red" />
+          <span className="tb yellow" />
+          <span className="tb green" />
+          <strong>bash — likelion@jbnu</strong>
+        </div>
+        <div className="pixel-terminal-body">
+          <p className="terminal-comment"># 전북대 멋사 현황</p>
+          <p><span className="terminal-command">cat status.json</span></p>
+          <code>{'{'}</code>
+          <code>&nbsp;&nbsp;<span>"season"</span> : <b>14</b>,</code>
+          <code>&nbsp;&nbsp;<span>"members"</span>: <b>48</b>,</code>
+          <code>&nbsp;&nbsp;<span>"projects"</span>: <b>30</b>,</code>
+          <code>&nbsp;&nbsp;<span>"awards"</span> : <b>5</b>,</code>
+          <code>&nbsp;&nbsp;<span>"status"</span> : <em>"ACTIVE"</em></code>
+          <code>{'}'}</code>
+          <p><span className="terminal-command">git log --oneline -3</span></p>
+          <code>🏆 a4f3c8b 해커톤 수상 ×2</code>
+          <code>🚀 b92e1d4 데모데이 완료</code>
+          <code>✅ c11a903 14기 모집 준비</code>
+          <p><span className="terminal-caret" /></p>
+        </div>
+      </aside>
+    </section>
+
+    {/* <nav className="home-nav-grid" aria-label="주요 페이지 바로가기">
+      {homeLinks.map(({ to, label, sub, icon: Icon }) => (
+        <Link key={to} className="home-nav-card" to={to}>
+          <Icon size={28} strokeWidth={1.6} />
+          <strong>{label}</strong>
+          <small>{sub}</small>
+        </Link>
+      ))}
+    </nav> */}
+    </>
   );
 }
