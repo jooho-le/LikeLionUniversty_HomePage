@@ -104,11 +104,22 @@ export default function Intro() {
       <section className="intro-section intro-overview">
         <div className="section-heading">
           <span>Overview</span>
-          <h2>전북대학교 멋쟁이사자처럼 14기 소개</h2>
+          <h1>LIKELION UNIVERSITY</h1>
+          <h4>멋쟁이사자처럼 대학 동아리 소개</h4>
         </div>
         <p>
-          홈에서는 큰 방향을 보여주고, 이곳에서는 활동 방식과 연간 흐름, 트랙별 커리큘럼,
-          프로젝트 예시를 자세히 살펴볼 수 있습니다.
+          멋쟁이사자처럼 대학은 전국 81개 대학교에서 14년째 운영하고 있는 전국 최대 규모의 IT/AI 연합동아리입니다. 대면 교육 세션과 스터디, 멋쟁이사자처럼 VOD, PBL 등으로 웹 기획·디자인, 프론트엔드, 백엔드 개발을 기초부터 체계적으로 배울 수 있습니다. 매년 여름 2천여 명이 참가하는 중앙 해커톤을 비롯해 다양한 대학 연합 행사에 참여하며 협업과 네트워킹 기회를 얻고 나만의 아이디어를 실현할 수 있습니다.
+        </p>
+      </section>
+
+      <section className="intro-section intro-overview">
+        <div className="section-heading">
+          <span>Overview</span>
+          <h1>LIKELION JBNU</h1>
+          <h4>전북대학교 멋쟁이사자처럼 14기 소개</h4>
+        </div>
+        <p>
+          전북대학교 멋쟁이사자처럼은 2017년 5기로 처음 시작되어 여러 공모전, 프로젝트, 스터디를 진행하며 활동을 진행하고있습니다. 
         </p>
       </section>
 
@@ -121,7 +132,7 @@ export default function Intro() {
       <section className="intro-section two-column">
         <div className="section-heading">
           <span>About</span>
-          <h2>세상을 넓혀가는 곳</h2>
+          <h2>꿈을 넗혀가는 곳</h2>
         </div>
         <div className="intro-copy-card">
           <Sparkles size={22} strokeWidth={1.8} />
@@ -211,7 +222,7 @@ export default function Intro() {
           <p>배우고 싶은 마음 하나로 충분합니다. 전북대학교 멋사에서 같이 만들어봐요.</p>
         </div>
         <Link className="hero-button primary" to="/apply">
-          지원 페이지로 이동
+          지원 페이지
           <Layers3 size={17} strokeWidth={1.8} />
         </Link>
       </section>
