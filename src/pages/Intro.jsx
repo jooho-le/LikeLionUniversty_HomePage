@@ -20,6 +20,7 @@ const stats = [
 const timeline = [
   { period: "03월", title: "모집 & OT", desc: "서류, 면접, 오리엔테이션으로 14기 활동을 시작합니다." },
   { period: "04-06월", title: "트랙 세션", desc: "프론트엔드, 백엔드, 기획/디자인 기초를 집중적으로 학습합니다." },
+  { period: "05월", title: "아아디이톤", desc: "세션에서 배운 내용을 바탕으로 아이디어를 구체화하고 발표합니다." },
   { period: "07-08월", title: "해커톤", desc: "짧은 기간 동안 팀으로 아이디어를 검증하고 프로토타입을 완성합니다." },
   { period: "09-11월", title: "팀 프로젝트", desc: "실제 사용자 문제를 정의하고 배포 가능한 서비스로 확장합니다." },
   { period: "12월", title: "데모데이", desc: "완성한 결과물을 발표하고 다음 성장을 위한 피드백을 나눕니다." },
@@ -32,6 +33,8 @@ const tracks = [
     name: "프론트엔드",
     desc: "React 기반 UI, 반응형 화면, API 연동을 통해 사용자와 만나는 화면을 만듭니다.",
     skills: ["HTML/CSS", "JavaScript", "React"],
+    sessions: ["HTML/CSS/JavaScript", "UI 구조 잡기", "컴포넌트 설계", "API 연동", "상태관리"],
+    output: "웹 프론트엔드 설계",
   },
   {
     to: "/intro/backend",
@@ -39,6 +42,8 @@ const tracks = [
     name: "백엔드",
     desc: "API, 데이터베이스, 인증, 배포를 익히며 서비스의 안정적인 구조를 설계합니다.",
     skills: ["Python", "Django", "REST API"],
+    sessions: ["Python", "Django", "서버 구조", "데이터베이스", "인증/배포", "서버 시나리오"],
+    output: "백엔드 설계",
   },
   {
     to: "/intro/planning-design",
@@ -46,13 +51,15 @@ const tracks = [
     name: "기획 · 디자인",
     desc: "문제 정의부터 프로토타입까지 서비스 방향과 사용자 경험을 구체화합니다.",
     skills: ["PRD", "Figma", "UX Research"],
+    sessions: ["문제 정의", "화면 설계", "프로토타입"],
+    output: "기획안 설계",
   },
 ];
 
 const projects = [
-  { title: "캠퍼스 밥친구", tags: "#커뮤니티 #매칭", desc: "혼밥을 줄이고 캠퍼스 안 식사 메이트를 찾는 서비스" },
-  { title: "중고책 마켓", tags: "#거래 #전공책", desc: "전공책 거래를 더 빠르고 안전하게 만드는 마켓" },
-  { title: "스터디 로그", tags: "#학습 #루틴", desc: "팀 학습 기록과 목표 달성을 관리하는 대시보드" },
+  // { title: "캠퍼스 밥친구", tags: "#커뮤니티 #매칭", desc: "혼밥을 줄이고 캠퍼스 안 식사 메이트를 찾는 서비스" },
+  // { title: "중고책 마켓", tags: "#거래 #전공책", desc: "전공책 거래를 더 빠르고 안전하게 만드는 마켓" },
+  // { title: "스터디 로그", tags: "#학습 #루틴", desc: "팀 학습 기록과 목표 달성을 관리하는 대시보드" },
 ];
 
 const faqs = [
@@ -89,6 +96,18 @@ function TrackCard({ item }) {
       </span>
       <h3>{item.name}</h3>
       <p>{item.desc}</p>
+      <div className="intro-track-news">
+        <strong>커리큘럼</strong>
+        <ul>
+          {item.sessions.map((session) => (
+            <li key={session}>{session}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="intro-track-output">
+        <span>결과물</span>
+        <strong>{item.output}</strong>
+      </div>
       <div>
         {item.skills.map((skill) => (
           <span className="intro-chip" key={skill}>{skill}</span>

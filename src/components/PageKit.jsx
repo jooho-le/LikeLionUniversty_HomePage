@@ -96,7 +96,7 @@ export function LinkGrid({ items }) {
   );
 }
 
-export function PlaceholderPanel({ title = "??" }) {
+export function PlaceholderPanel({ title = "??", description = "??", points = [], children }) {
   const [isClosed, setIsClosed] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -126,7 +126,18 @@ export function PlaceholderPanel({ title = "??" }) {
       {!isCollapsed && (
         <div className="placeholder-body">
           <h2>{title}</h2>
-          <p>??</p>
+          {children ?? (
+            <>
+              <p>{description}</p>
+              {points.length > 0 && (
+                <ul className="placeholder-list">
+                  {points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              )}
+            </>
+          )}
         </div>
       )}
     </section>
