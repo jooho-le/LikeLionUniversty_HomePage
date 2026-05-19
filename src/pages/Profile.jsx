@@ -4,7 +4,7 @@ import { ArrowRight, CalendarDays, UsersRound } from "lucide-react";
 const profileStats = [
   { value: "14TH", label: "현재 기수" },
   { value: "3", label: "운영 트랙" },
-  { value: "??", label: "활동 멤버" },
+  { value: "12", label: "활동 멤버" },
 ];
 
 export default function Profile() {
@@ -12,11 +12,10 @@ export default function Profile() {
     <div className="profile-page">
       <section className="profile-hero-card">
         <div>
-          <p className="eyebrow">Profile</p>
+          <p className="eyebrow">Member</p>
           <h1>프로필</h1>
           <p>
-            전북대학교 멋쟁이사자처럼 14기의 운영진과 회원을 한눈에 확인할 수 있는
-            멤버 아카이브입니다.
+            전북대학교 멋쟁이사자처럼 14기의 운영진과 회원 아기사자들을 확인할 수 있습니다.
           </p>
         </div>
         <span className="profile-hero-icon" aria-hidden="true">
