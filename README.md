@@ -19,6 +19,8 @@ macOS 데스크톱을 콘셉트로, 앱 창 안에서 소개, 프로필, 프로�
 
 ## 실행 방법
 
+### 프론트엔드
+
 ```bash
 npm install
 npm run dev
@@ -29,6 +31,21 @@ npm run dev
 ```txt
 http://localhost:5173/
 ```
+
+### 백엔드
+
+```bash
+pip install -r backend/requirements.txt
+cd backend
+uvicorn app.main:app --reload
+```
+
+API 서버는 아래 주소에서 실행됩니다.
+
+```txt
+http://localhost:8000/
+```
+
 
 ## 빌드
 
@@ -42,6 +59,7 @@ npm run build
 
 ```txt
 .
+├── backend/ 
 ├── index.html
 ├── package.json
 ├── package-lock.json
