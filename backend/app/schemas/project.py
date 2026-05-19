@@ -2,6 +2,15 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
+class ProjectListResponse(BaseModel):
+    id: int
+    title: str
+    thumbnail: str | None
+    tech_stack: str | None
+
+    model_config = {"from_attributes": True}
+
+
 class ProjectCreate(BaseModel):
     title: str
     description: str | None = None
