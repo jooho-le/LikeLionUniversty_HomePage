@@ -4,8 +4,8 @@ from datetime import datetime
 from app.database import Base
 
 
-class Board(Base):
-    __tablename__ = "board"
+class Diary(Base):
+    __tablename__ = "diary"
 
     id = Column(Integer, primary_key=True, index=True)
     author_id = Column(Integer, ForeignKey("user.id"), nullable=False)

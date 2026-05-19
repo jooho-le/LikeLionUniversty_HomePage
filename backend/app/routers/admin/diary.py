@@ -4,11 +4,11 @@ from datetime import datetime
 import secrets
 
 from app.database import get_db
-from app.models.board import Board
+from app.models.diary import Diary
 from app.core.config import ADMIN_USERNAME, ADMIN_PASSWORD
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-router = APIRouter(prefix="/admin/board", tags=["admin - board"])
+router = APIRouter(prefix="/admin/diary", tags=["admin - diary"])
 basic_security = HTTPBasic()
 
 
@@ -20,17 +20,17 @@ def verify_admin(credentials: HTTPBasicCredentials = Depends(basic_security)):
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT,
-    summary="게시글 강제 삭제",
-    description="admin 전용. 타인 게시글도 삭제 가능. 실제 삭제가 아닌 deleted_at 기록(soft delete)."
+    summary="일지 강제 삭제",
+    description="admin 전용. 타인 일지도 삭제 가능. 실제 삭제가 아닌 deleted_at 기록(soft delete)."
 )
-def admin_delete_board(
+def admin_delete_diary(
     post_id: int,
     db: Session = Depends(get_db),
     _: None = Depends(verify_admin),
 ):
-    board = db.query(Board).filter(Board.id == post_id, Board.deleted_at == None).first()
-    if not board:
-        raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다")
+    diary = db.query(Diary).filter(Diary.id == post_id, Diary.deleted_at == None).first()
+    if not diary:
+        raise HTTPException(status_code=404, detail="일지를 찾을 수 없습니다")
 
-    board.deleted_at = datetime.utcnow()
+    diary.deleted_at = datetime.utcnow()
     db.commit()

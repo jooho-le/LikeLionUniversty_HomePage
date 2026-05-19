@@ -20,5 +20,5 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete")
-    posts = relationship("Board", back_populates="author")
+    posts = relationship("Diary", back_populates="author")
     member_profile = relationship("Member", back_populates="user", uselist=False)

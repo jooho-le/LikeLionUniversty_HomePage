@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
 from app.models import *
-from app.routers import auth, users, board, apply, members, projects, sessions
+from app.routers import auth, users, diary, apply, members, projects, sessions
 from app.routers.admin import users as admin_users
-from app.routers.admin import board as admin_board
+from app.routers.admin import diary as admin_diary
 from app.routers.admin import apply as admin_apply
 from app.routers.admin import members as admin_members
 from app.routers.admin import projects as admin_projects
@@ -29,13 +29,13 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(users.router)
-app.include_router(board.router)
+app.include_router(diary.router)
 app.include_router(apply.router)
 app.include_router(members.router)
 app.include_router(projects.router)
 app.include_router(sessions.router)
 app.include_router(admin_users.router)
-app.include_router(admin_board.router)
+app.include_router(admin_diary.router)
 app.include_router(admin_apply.router)
 app.include_router(admin_members.router)
 app.include_router(admin_projects.router)

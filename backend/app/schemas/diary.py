@@ -2,17 +2,17 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class BoardCreate(BaseModel):
+class DiaryCreate(BaseModel):
     title: str
     content: str
 
 
-class BoardUpdate(BaseModel):
+class DiaryUpdate(BaseModel):
     title: str | None = None
     content: str | None = None
 
 
-class BoardResponse(BaseModel):
+class DiaryResponse(BaseModel):
     id: int
     author_id: int
     title: str
