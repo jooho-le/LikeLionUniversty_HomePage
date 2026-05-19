@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
@@ -14,5 +14,10 @@ class Diary(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     deleted_at = Column(DateTime, nullable=True)
+    category = Column(String, nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("category IN ('backend', 'frontend', 'design')", name="diary_category_check"),
+    )
 
     author = relationship("User", back_populates="posts")

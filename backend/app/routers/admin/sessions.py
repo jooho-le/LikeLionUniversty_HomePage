@@ -21,7 +21,7 @@ def verify_admin(credentials: HTTPBasicCredentials = Depends(basic_security)):
 
 @router.post("", response_model=SessionResponse, status_code=status.HTTP_201_CREATED,
     summary="세션 등록",
-    description="admin 전용. 동아리 세션(스터디/발표) 등록. session_date는 ISO 8601 형식으로 입력(예: 2025-03-01T14:00:00)."
+    description="admin 전용. 동아리 세션(스터디/발표) 등록. session_date는 ISO 8601 형식으로 입력(예: 2025-03-01T14:00:00). category는 backend, frontend, design 중 하나를 입력."
 )
 def create_session(
     body: SessionCreate,
@@ -37,7 +37,7 @@ def create_session(
 
 @router.patch("/{session_id}", response_model=SessionResponse,
     summary="세션 수정",
-    description="admin 전용. 원하는 필드만 수정 가능."
+    description="admin 전용. 원하는 필드만 수정 가능. category 수정 시 backend, frontend, design 중 하나를 입력."
 )
 def update_session(
     session_id: int,

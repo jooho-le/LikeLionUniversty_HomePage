@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import Optional
 
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.schemas.diary import DiaryCreate, DiaryUpdate, DiaryResponse
+from app.schemas.diary import DiaryCreate, DiaryUpdate, DiaryResponse, CategoryType
 from app.models.diary import Diary
 from app.models.user import User
 
@@ -13,13 +14,17 @@ router = APIRouter(prefix="/diary", tags=["diary"])
 
 @router.get("", response_model=list[DiaryResponse],
     summary="일지 목록 조회",
-    description="삭제되지 않은 일지 전체 목록. 최신순 정렬. 승인된 회원만 접근 가능."
+    description="삭제되지 않은 일지 목록. category 쿼리로 backend/frontend/design 필터링 가능. 최신순 정렬."
 )
 def get_diaries(
+    category: Optional[CategoryType] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db.query(Diary).filter(Diary.deleted_at == None).order_by(Diary.created_at.desc()).all()
+    query = db.query(Diary).filter(Diary.deleted_at == None)
+    if category:
+        query = query.filter(Diary.category == category)
+    return query.order_by(Diary.created_at.desc()).all()
 
 
 @router.get("/{post_id}", response_model=DiaryResponse,
@@ -39,7 +44,7 @@ def get_diary(
 
 @router.post("", response_model=DiaryResponse, status_code=status.HTTP_201_CREATED,
     summary="일지 작성",
-    description="승인된 회원만 일지 작성 가능. author_id는 토큰에서 자동 추출."
+    description="승인된 회원만 일지 작성 가능. author_id는 토큰에서 자동 추출. category는 backend, frontend, design 중 하나를 입력."
 )
 def create_diary(
     body: DiaryCreate,
@@ -50,6 +55,7 @@ def create_diary(
         author_id=current_user.id,
         title=body.title,
         content=body.content,
+        category=body.category,
     )
     db.add(diary)
     db.commit()
@@ -59,7 +65,7 @@ def create_diary(
 
 @router.patch("/{post_id}", response_model=DiaryResponse,
     summary="일지 수정",
-    description="본인 일지만 수정 가능. 제목/내용 중 원하는 필드만 수정 가능."
+    description="본인 일지만 수정 가능. 원하는 필드만 수정 가능. category 수정 시 backend, frontend, design 중 하나를 입력."
 )
 def update_diary(
     post_id: int,
@@ -77,6 +83,8 @@ def update_diary(
         diary.title = body.title
     if body.content is not None:
         diary.content = body.content
+    if body.category is not None:
+        diary.category = body.category
 
     db.commit()
     db.refresh(diary)

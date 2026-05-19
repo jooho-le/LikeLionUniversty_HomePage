@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, CheckConstraint
 from datetime import datetime
 from app.database import Base
 
@@ -13,3 +13,8 @@ class Session(Base):
     session_date = Column(DateTime, nullable=True)
     material_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    category = Column(String, nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("category IN ('backend', 'frontend', 'design')", name="session_category_check"),
+    )
