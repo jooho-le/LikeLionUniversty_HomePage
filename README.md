@@ -17,14 +17,6 @@ macOS 데스크톱을 콘셉트로, 앱 창 안에서 소개, 프로필, 프로�
 - 페이지별 파일 분리
 - 세부 내용은 추후 수정할 수 있도록 `??` placeholder로 구성
 
-## 기술 스택
-
-- React
-- Vite
-- React Router DOM
-- Lucide React
-- CSS
-
 ## 실행 방법
 
 ```bash
@@ -124,21 +116,3 @@ npm run build
 - `/apply/faq`: FAQ
 - `/apply/form`: ?기 신청하기
 - `/login`: 로그인
-
-## 수정 가이드
-
-세부 내용은 각 페이지 파일 안의 `??`를 찾아 수정하면 됩니다.
-
-예시:
-
-```txt
-src/pages/Home.jsx
-src/pages/Intro.jsx
-src/pages/ProjectCardNews.jsx
-```
-
-최소화/닫기 상태의 배경 이미지를 바꾸려면 아래 파일을 교체합니다.
-
-```txt
-public/assets/preview.png
-```
