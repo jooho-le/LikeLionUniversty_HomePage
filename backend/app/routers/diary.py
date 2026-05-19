@@ -14,12 +14,11 @@ router = APIRouter(prefix="/diary", tags=["diary"])
 
 @router.get("", response_model=list[DiaryResponse],
     summary="일지 목록 조회",
-    description="삭제되지 않은 일지 목록. category 쿼리로 backend/frontend/design 필터링 가능. 최신순 정렬."
+    description="누구나 조회 가능. 삭제되지 않은 일지 목록. category 쿼리로 backend/frontend/design 필터링 가능. 최신순 정렬."
 )
 def get_diaries(
     category: Optional[CategoryType] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
     query = db.query(Diary).filter(Diary.deleted_at == None)
     if category:
@@ -29,12 +28,11 @@ def get_diaries(
 
 @router.get("/{post_id}", response_model=DiaryResponse,
     summary="일지 상세 조회",
-    description="특정 일지 상세 조회. 삭제된 일지는 404 반환."
+    description="누구나 조회 가능. 특정 일지 상세 조회. 삭제된 일지는 404 반환."
 )
 def get_diary(
     post_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
     diary = db.query(Diary).filter(Diary.id == post_id, Diary.deleted_at == None).first()
     if not diary:
