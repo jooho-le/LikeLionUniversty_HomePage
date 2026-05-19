@@ -76,12 +76,12 @@ function LinkedWindowCard({ to, title, meta, external }) {
   );
 }
 
-export function PageHeader({ eyebrow, title }) {
+export function PageHeader({ eyebrow, title, description = "??" }) {
   return (
     <section className="page-header">
       <p className="eyebrow">{eyebrow}</p>
       <h1>{title}</h1>
-      <p className="lead">??</p>
+      <p className="lead">{description}</p>
     </section>
   );
 }

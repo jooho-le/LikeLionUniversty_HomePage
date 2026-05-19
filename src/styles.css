@@ -1304,6 +1304,31 @@ form button,
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
+.card-window-bar {
+  min-height: 42px;
+  border-bottom: 1px solid var(--line);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.54);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.card-window-bar .traffic-dots {
+  flex: 0 0 auto;
+}
+
+.card-window-bar > span:not(.traffic-dots) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .page-card-body {
   height: 100%;
   padding: 22px;
@@ -1358,6 +1383,260 @@ form button,
   border-radius: 50%;
   display: inline-block;
   background: var(--accent);
+}
+
+.profile-page,
+.member-page {
+  display: grid;
+  gap: 22px;
+}
+
+.profile-hero-card,
+.generation-entry-card,
+.profile-stat-card,
+.member-section,
+.member-card {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.profile-hero-card {
+  min-height: 260px;
+  padding: clamp(28px, 5vw, 52px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  background:
+    linear-gradient(135deg, rgba(0, 102, 179, 0.08), transparent 48%),
+    rgba(255, 255, 255, 0.78);
+}
+
+.profile-hero-card h1 {
+  margin: 10px 0 18px;
+  color: var(--ink);
+  font-size: clamp(3.4rem, 8vw, 6.2rem);
+  font-weight: 880;
+  line-height: 0.9;
+}
+
+.profile-hero-card p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 1.05rem;
+  line-height: 1.72;
+}
+
+.profile-hero-icon {
+  width: 92px;
+  height: 92px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #4f96df);
+  box-shadow: 0 20px 44px rgba(0, 102, 179, 0.24);
+}
+
+.profile-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.profile-stat-card {
+  min-height: 128px;
+  padding: 20px;
+  display: grid;
+  align-content: space-between;
+}
+
+.profile-stat-card strong {
+  color: var(--accent-strong);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 880;
+}
+
+.profile-stat-card span {
+  color: var(--soft-ink);
+  font-weight: 780;
+}
+
+.generation-entry-card {
+  min-height: 184px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.generation-entry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 54px rgba(21, 25, 32, 0.14);
+}
+
+.generation-entry-copy {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.entry-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: rgba(0, 102, 179, 0.1);
+}
+
+.generation-entry-card h2 {
+  margin: 4px 0 8px;
+  color: var(--ink);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 850;
+}
+
+.generation-entry-card p:last-child {
+  margin: 0;
+  color: var(--soft-ink);
+}
+
+.member-section {
+  padding: clamp(22px, 3vw, 30px);
+  display: grid;
+  gap: 18px;
+}
+
+.member-section-heading {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.member-section-heading span {
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.member-section-heading h2 {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 860;
+}
+
+.member-section-heading p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 28px);
+}
+
+.member-card {
+  min-height: 500px;
+  overflow: hidden;
+  padding: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: stretch;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.member-photo {
+  width: 100%;
+  min-height: clamp(280px, 28vw, 420px);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(23, 25, 29, 0.34);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent),
+    #dddddd;
+  box-shadow: none;
+  font-size: 0;
+  font-weight: 900;
+}
+
+.member-photo span {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, transparent 47%, rgba(23, 25, 29, 0.28) 48% 56%, transparent 57%),
+    radial-gradient(circle at 68% 30%, rgba(23, 25, 29, 0.28) 0 7px, transparent 8px),
+    linear-gradient(135deg, rgba(23, 25, 29, 0.24) 45%, transparent 46%);
+}
+
+.member-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  background: #dddddd;
+}
+
+.member-info {
+  min-width: 0;
+  padding: 28px 22px 30px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 10px;
+  text-align: center;
+  background: rgba(247, 247, 248, 0.74);
+}
+
+.member-info strong {
+  color: var(--ink);
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 850;
+}
+
+.member-info span {
+  color: var(--soft-ink);
+  font-size: 1.05rem;
+  font-weight: 780;
+}
+
+.member-info em {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-style: normal;
+  font-weight: 760;
+}
+
+.member-info small {
+  width: max-content;
+  max-width: 100%;
+  border-radius: 999px;
+  padding: 7px 11px;
+  color: var(--accent-strong);
+  background: rgba(0, 102, 179, 0.09);
+  font-size: 0.76rem;
+  font-weight: 850;
 }
 
 .faq-list {
@@ -1497,6 +1776,11 @@ form button {
   .card-news-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .profile-stat-row,
+  .member-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -1571,8 +1855,22 @@ form button {
   .intro-track-grid,
   .intro-project-grid,
   .quick-grid,
-  .card-news-grid {
+  .card-news-grid,
+  .profile-stat-row,
+  .member-grid {
     grid-template-columns: 1fr;
+  }
+
+  .profile-hero-card,
+  .generation-entry-card,
+  .generation-entry-copy {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .generation-entry-card,
+  .generation-entry-copy {
+    flex-direction: column;
   }
 
   .home-nav-grid {
