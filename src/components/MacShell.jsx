@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
+  BookOpenText,
   ClipboardList,
   FolderKanban,
   Home,
@@ -12,6 +13,7 @@ import {
 const navItems = [
   { to: "/", label: "Home", ko: "홈", icon: Home },
   { to: "/intro", label: "About", ko: "소개", icon: Info },
+  { to: "/session", label: "Session", ko: "세션", icon: BookOpenText },
   { to: "/projects", label: "Projects", ko: "프로젝트", icon: FolderKanban },
   { to: "/profile", label: "Members", ko: "멤버", icon: UserRound },
   { to: "/apply", label: "Apply", ko: "지원", icon: ClipboardList },
@@ -20,6 +22,7 @@ const navItems = [
 
 const routeTitles = [
   { prefix: "/intro", title: "소개" },
+  { prefix: "/session", title: "세션" },
   { prefix: "/projects", title: "프로젝트" },
   { prefix: "/profile", title: "멤버" },
   { prefix: "/apply", title: "지원" },

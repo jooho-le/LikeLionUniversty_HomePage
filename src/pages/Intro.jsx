@@ -28,7 +28,6 @@ const timeline = [
 
 const tracks = [
   {
-    to: "/intro/frontend",
     icon: Code2,
     name: "프론트엔드",
     desc: "React 기반 UI, 반응형 화면, API 연동을 통해 사용자와 만나는 화면을 만듭니다.",
@@ -37,7 +36,6 @@ const tracks = [
     output: "웹 프론트엔드 설계",
   },
   {
-    to: "/intro/backend",
     icon: Server,
     name: "백엔드",
     desc: "API, 데이터베이스, 인증, 배포를 익히며 서비스의 안정적인 구조를 설계합니다.",
@@ -46,7 +44,6 @@ const tracks = [
     output: "백엔드 설계",
   },
   {
-    to: "/intro/planning-design",
     icon: PenTool,
     name: "기획 · 디자인",
     desc: "문제 정의부터 프로토타입까지 서비스 방향과 사용자 경험을 구체화합니다.",
@@ -90,7 +87,7 @@ function TrackCard({ item }) {
   const Icon = item.icon;
 
   return (
-    <Link className="intro-track-card" to={item.to}>
+    <article className="intro-track-card">
       <span className="intro-icon" aria-hidden="true">
         <Icon size={22} strokeWidth={1.8} />
       </span>
@@ -113,7 +110,7 @@ function TrackCard({ item }) {
           <span className="intro-chip" key={skill}>{skill}</span>
         ))}
       </div>
-    </Link>
+    </article>
   );
 }
 
