@@ -1901,3 +1901,238 @@ form button {
     width: 100%;
   }
 }
+
+/* ── Apply Page ── */
+.apply-page {
+  display: grid;
+  gap: 48px;
+}
+
+.apply-hero {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 340px);
+  gap: clamp(32px, 5vw, 64px);
+  align-items: start;
+}
+
+.apply-title {
+  margin: 16px 0 14px;
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.apply-title span {
+  color: #d3457c;
+}
+
+.apply-desc {
+  margin: 0 0 20px;
+  color: var(--soft-ink);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.apply-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.apply-badge {
+  padding: 5px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: "SF Mono", Consolas, monospace;
+}
+
+.apply-hero-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.apply-track-list {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.apply-track-list-head {
+  padding: 12px 18px;
+  background: var(--card-dark);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 0.76rem;
+}
+
+.apply-track-row {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-top: 1px solid var(--line);
+}
+
+.apply-track-row strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+
+.apply-track-row small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.apply-track-row span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-family: "SF Mono", Consolas, monospace;
+}
+
+.apply-section {
+  display: grid;
+  gap: 24px;
+}
+
+.apply-process {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+}
+
+.apply-step {
+  padding: 24px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  display: grid;
+  gap: 6px;
+  background: var(--surface);
+}
+
+.apply-step-num {
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--line);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.apply-step strong {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.apply-step p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--soft-ink);
+  line-height: 1.6;
+}
+
+.apply-step-date {
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 0.72rem;
+  color: #d3457c;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.apply-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  gap: 0;
+}
+
+.apply-tab {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+  margin-bottom: -1px;
+}
+
+.apply-tab:hover {
+  color: var(--ink);
+}
+
+.apply-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.apply-curr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.apply-curr-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: background 0.12s;
+}
+
+.apply-curr-item:hover {
+  background: var(--surface-strong);
+}
+
+.apply-curr-week {
+  flex-shrink: 0;
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #d3457c;
+  min-width: 44px;
+  padding-top: 2px;
+}
+
+.apply-curr-item strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.apply-curr-item p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--soft-ink);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .apply-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-process {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .apply-curr-grid {
+    grid-template-columns: 1fr;
+  }
+}
