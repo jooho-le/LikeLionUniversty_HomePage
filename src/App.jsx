@@ -6,15 +6,7 @@ import AboutLikeLion from "./pages/AboutLikeLion.jsx";
 import LikeLionInstagram from "./pages/LikeLionInstagram.jsx";
 import LikeLionHomepage from "./pages/LikeLionHomepage.jsx";
 import LikeLionPBL from "./pages/LikeLionPBL.jsx";
-import BackendSession from "./pages/BackendSession.jsx";
-import BackendContent from "./pages/BackendContent.jsx";
-import BackendDiary from "./pages/BackendDiary.jsx";
-import FrontendSession from "./pages/FrontendSession.jsx";
-import FrontendContent from "./pages/FrontendContent.jsx";
-import FrontendDiary from "./pages/FrontendDiary.jsx";
-import PlanningDesignSession from "./pages/PlanningDesignSession.jsx";
-import PlanningDesignContent from "./pages/PlanningDesignContent.jsx";
-import PlanningDesignDiary from "./pages/PlanningDesignDiary.jsx";
+import Session from "./pages/Session.jsx";
 import Profile from "./pages/Profile.jsx";
 import GenerationSelect from "./pages/GenerationSelect.jsx";
 import StaffProfile from "./pages/StaffProfile.jsx";
@@ -38,15 +30,7 @@ export default function App() {
         <Route path="/intro/about/instagram" element={<LikeLionInstagram />} />
         <Route path="/intro/about/homepage" element={<LikeLionHomepage />} />
         <Route path="/intro/about/pbl" element={<LikeLionPBL />} />
-        <Route path="/intro/backend" element={<BackendSession />} />
-        <Route path="/intro/backend/content" element={<BackendContent />} />
-        <Route path="/intro/backend/diary" element={<BackendDiary />} />
-        <Route path="/intro/frontend" element={<FrontendSession />} />
-        <Route path="/intro/frontend/content" element={<FrontendContent />} />
-        <Route path="/intro/frontend/diary" element={<FrontendDiary />} />
-        <Route path="/intro/planning-design" element={<PlanningDesignSession />} />
-        <Route path="/intro/planning-design/content" element={<PlanningDesignContent />} />
-        <Route path="/intro/planning-design/diary" element={<PlanningDesignDiary />} />
+        <Route path="/session" element={<Session />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile/generation" element={<GenerationSelect />} />
         <Route path="/profile/staff" element={<StaffProfile />} />
