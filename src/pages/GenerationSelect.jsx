@@ -7,13 +7,13 @@ const staffProfiles = [
 ];
 
 const memberProfiles = [
-  { name: "김민령", role: "회원", track: "백엔드", detail: "컴퓨터인공지능학부" },
+  { name: "김민령", role: "회원", track: "백엔드", detail: "컴퓨터인공지능학부", image: "/assets/members/kim-minrung.jpeg" },
   { name: "박도현", role: "회원", track: "백엔드", detail: "소프트웨어공학부" },
   { name: "정세빈", role: "회원", track: "백엔드, 프론트엔드, 기획/디자인", detail: "컴퓨터공학부" },
   { name: "오성준", role: "회원", track: "백엔드, 프론트엔드", detail: "컴퓨터인공지능학부", image: "/assets/members/oh-sungjun.jpeg" },
   { name: "김지빈", role: "회원", track: "백엔드", detail: "컴퓨터인공지능학부", image: "/assets/members/kim-jibin.jpeg" },
-  { name: "박소현", role: "회원", track: "기획/디자인", detail: "컴퓨터공학부" },
-  { name: "박서정", role: "회원", track: "백엔드", detail: "산업정보시스템공학과" },
+  { name: "박소현", role: "회원", track: "백엔드", detail: "컴퓨터공학부" },
+  { name: "박서정", role: "회원", track: "기획/디자인", detail: "산업정보시스템공학과" },
   { name: "최정우", role: "회원", track: "백엔드, 프론트엔드", detail: "수학과", image: "/assets/members/choi-jungwoo.jpeg" },
   { name: "전진표", role: "회원", track: "백엔드, 프론트엔드", detail: "컴퓨터인공지능학부", image: "/assets/members/jeon-jinpyo.jpeg" },
 ];
