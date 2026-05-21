@@ -21,6 +21,7 @@ const navItems = [
 ];
 
 const routeTitles = [
+  { prefix: "/admin", title: "관리자" },
   { prefix: "/intro", title: "소개" },
   { prefix: "/session", title: "세션" },
   { prefix: "/projects", title: "프로젝트" },

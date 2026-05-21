@@ -18,6 +18,8 @@ import Apply from "./pages/Apply.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import ApplyForm from "./pages/ApplyForm.jsx";
 import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Admin from "./pages/Admin.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -42,6 +44,8 @@ export default function App() {
         <Route path="/apply/faq" element={<FAQ />} />
         <Route path="/apply/form" element={<ApplyForm />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </MacShell>

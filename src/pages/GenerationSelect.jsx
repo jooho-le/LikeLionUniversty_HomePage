@@ -1,4 +1,6 @@
+import { useEffect, useMemo, useState } from "react";
 import { BackLink, PageHeader } from "../components/PageKit.jsx";
+import { getMembers } from "../lib/api.js";
 
 const staffProfiles = [
   { name: "전진욱", role: "대표", track: "백엔드, 프론트엔드, 기획/디자인", detail: "컴퓨터인공지능학부", image: "/assets/members/jeon-jinuk.jpeg" },
@@ -17,6 +19,24 @@ const memberProfiles = [
   { name: "최정우", role: "회원", track: "백엔드, 프론트엔드", detail: "수학과", image: "/assets/members/choi-jungwoo.jpeg" },
   { name: "전진표", role: "회원", track: "백엔드, 프론트엔드", detail: "컴퓨터인공지능학부", image: "/assets/members/jeon-jinpyo.jpeg" },
 ];
+
+function isStaffRole(role = "") {
+  return /대표|운영진|staff/i.test(role);
+}
+
+function mapApiMember(member) {
+  const roleLabel = member.role_label ?? "회원";
+
+  return {
+    id: member.id,
+    name: member.name,
+    role: isStaffRole(roleLabel) ? roleLabel : "회원",
+    track: roleLabel,
+    detail: member.joined_year ? `${member.joined_year}년 가입` : "전북대학교 멋쟁이사자처럼",
+    image: member.profile_image,
+    github: member.github_url,
+  };
+}
 
 function MemberCard({ person }) {
   return (
@@ -45,15 +65,53 @@ function MemberSection({ eyebrow, title, people }) {
         <p>전북대학교 멋쟁이사자처럼 14기 {title}입니다.</p>
       </div>
       <div className="member-grid">
-        {people.map((person, index) => (
-          <MemberCard person={person} key={`${title}-${person.name}-${index}`} />
-        ))}
+        {people.length > 0 ? (
+          people.map((person, index) => (
+            <MemberCard person={person} key={`${title}-${person.id ?? person.name}-${index}`} />
+          ))
+        ) : (
+          <p className="member-empty">등록된 {title} 데이터가 없습니다.</p>
+        )}
       </div>
     </section>
   );
 }
 
 export default function GenerationSelect() {
+  const [apiMembers, setApiMembers] = useState(null);
+  const [loadMessage, setLoadMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getMembers()
+      .then((members) => {
+        if (!isMounted) return;
+        setApiMembers(members.map(mapApiMember));
+        setLoadMessage("");
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setApiMembers(null);
+        setLoadMessage("백엔드 API 연결 전이라 로컬 예시 멤버를 보여주고 있습니다.");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const { staff, members } = useMemo(() => {
+    if (!apiMembers) {
+      return { staff: staffProfiles, members: memberProfiles };
+    }
+
+    return {
+      staff: apiMembers.filter((person) => isStaffRole(person.role)),
+      members: apiMembers.filter((person) => !isStaffRole(person.role)),
+    };
+  }, [apiMembers]);
+
   return (
     <div className="member-page">
       <BackLink to="/profile" label="프로필" />
@@ -62,8 +120,9 @@ export default function GenerationSelect() {
         title="14기 멤버"
         description="전북대 멋쟁이사자 14기의 운영진과 회원 아기사자들입니다."
       />
-      <MemberSection eyebrow="Staff" people={staffProfiles} title="운영진" />
-      <MemberSection eyebrow="Members" people={memberProfiles} title="회원" />
+      {loadMessage && <p className="session-api-message">{loadMessage}</p>}
+      <MemberSection eyebrow="Staff" people={staff} title="운영진" />
+      <MemberSection eyebrow="Members" people={members} title="회원" />
     </div>
   );
 }

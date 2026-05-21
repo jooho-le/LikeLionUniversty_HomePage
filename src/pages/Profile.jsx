@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CalendarDays, UsersRound } from "lucide-react";
+import { getMembers } from "../lib/api.js";
 
 const profileStats = [
   { value: "14TH", label: "현재 기수" },
@@ -8,6 +10,32 @@ const profileStats = [
 ];
 
 export default function Profile() {
+  const [memberCount, setMemberCount] = useState(profileStats[2].value);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getMembers()
+      .then((members) => {
+        if (isMounted) {
+          setMemberCount(String(members.length));
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setMemberCount(profileStats[2].value);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const stats = profileStats.map((item) =>
+    item.label === "활동 멤버" ? { ...item, value: memberCount } : item,
+  );
+
   return (
     <div className="profile-page">
       <section className="profile-hero-card">
@@ -24,7 +52,7 @@ export default function Profile() {
       </section>
 
       <section className="profile-stat-row" aria-label="프로필 요약">
-        {profileStats.map((item) => (
+        {stats.map((item) => (
           <article className="profile-stat-card" key={item.label}>
             <strong>{item.value}</strong>
             <span>{item.label}</span>

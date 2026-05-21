@@ -1,22 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-import secrets
 
 from app.database import get_db
+from app.dependencies import verify_admin
 from app.schemas.member import MemberCreate, MemberUpdate, MemberResponse
 from app.models.member import Member
-from app.core.config import ADMIN_USERNAME, ADMIN_PASSWORD
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 router = APIRouter(prefix="/admin/members", tags=["admin - members"])
-basic_security = HTTPBasic()
-
-
-def verify_admin(credentials: HTTPBasicCredentials = Depends(basic_security)):
-    ok_username = secrets.compare_digest(credentials.username, ADMIN_USERNAME)
-    ok_password = secrets.compare_digest(credentials.password, ADMIN_PASSWORD)
-    if not (ok_username and ok_password):
-        raise HTTPException(status_code=401, detail="관리자 인증 실패")
 
 
 @router.post("", response_model=MemberResponse, status_code=status.HTTP_201_CREATED,

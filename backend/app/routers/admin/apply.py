@@ -1,22 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-import secrets
 
 from app.database import get_db
+from app.dependencies import verify_admin
 from app.schemas.apply import ApplyResponse
 from app.models.application import Application
-from app.core.config import ADMIN_USERNAME, ADMIN_PASSWORD
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 router = APIRouter(prefix="/admin/apply", tags=["admin - apply"])
-basic_security = HTTPBasic()
-
-
-def verify_admin(credentials: HTTPBasicCredentials = Depends(basic_security)):
-    ok_username = secrets.compare_digest(credentials.username, ADMIN_USERNAME)
-    ok_password = secrets.compare_digest(credentials.password, ADMIN_PASSWORD)
-    if not (ok_username and ok_password):
-        raise HTTPException(status_code=401, detail="관리자 인증 실패")
 
 
 @router.get("", response_model=list[ApplyResponse],
