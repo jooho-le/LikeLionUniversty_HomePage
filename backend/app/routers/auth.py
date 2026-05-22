@@ -21,18 +21,27 @@ router = APIRouter(prefix="/auth", tags=["auth"])
     description="누구나 가입 가능. 가입 후 status는 pending 상태로 admin 승인 대기. 이메일/닉네임 중복 불가."
 )
 def register(body: RegisterRequest, db: Session = Depends(get_db)):
-    if db.query(User).filter(User.email == body.email).first():
+    email = body.email.strip().lower()
+    username = body.username.strip()
+    password = body.password.strip()
+
+    if not username:
+        raise HTTPException(status_code=400, detail="닉네임을 입력해주세요")
+    if not password:
+        raise HTTPException(status_code=400, detail="비밀번호를 입력해주세요")
+
+    if db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=400, detail="이미 사용 중인 이메일입니다")
-    if db.query(User).filter(User.username == body.username).first():
+    if db.query(User).filter(User.username == username).first():
         raise HTTPException(status_code=400, detail="이미 사용 중인 닉네임입니다")
 
     user = User(
-        username=body.username,
-        email=body.email,
-        password_hash=hash_password(body.password),
-        student_id=body.student_id,
-        major=body.major,
-        phone=body.phone,
+        username=username,
+        email=email,
+        password_hash=hash_password(password),
+        student_id=body.student_id.strip() if body.student_id else None,
+        major=body.major.strip() if body.major else None,
+        phone=body.phone.strip() if body.phone else None,
         role="member",
         status="pending",
     )
@@ -47,9 +56,11 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)):
     description="이메일/비밀번호로 로그인. 승인된 회원만 가능. access token(30분)과 refresh token(7일) 반환."
 )
 def login(body: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == body.email).first()
+    email = body.email.strip().lower()
+    password = body.password.strip()
+    user = db.query(User).filter(User.email == email).first()
 
-    if not user or not verify_password(body.password, user.password_hash):
+    if not user or not verify_password(password, user.password_hash):
         raise HTTPException(status_code=401, detail="이메일 또는 비밀번호가 올바르지 않습니다")
     if user.status == "pending":
         raise HTTPException(status_code=403, detail="가입 승인 대기 중입니다. 운영진에게 문의하세요")
@@ -84,7 +95,12 @@ def refresh(body: RefreshRequest, db: Session = Depends(get_db)):
     if not db_token or db_token.expires_at < datetime.utcnow():
         raise HTTPException(status_code=401, detail="만료되었거나 존재하지 않는 refresh token입니다")
 
-    user = db.query(User).filter(User.id == int(payload.get("sub"))).first()
+    try:
+        user_id = int(payload.get("sub"))
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=401, detail="유효하지 않은 refresh token입니다")
+
+    user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=401, detail="사용자를 찾을 수 없습니다")
 
