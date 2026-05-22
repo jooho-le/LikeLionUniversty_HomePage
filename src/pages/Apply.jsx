@@ -1,19 +1,53 @@
-import { LinkGrid, PageHeader } from "../components/PageKit.jsx";
+import { Route, Routes } from "react-router-dom";
+import MacShell from "./components/MacShell.jsx";
+import Home from "./pages/Home.jsx";
+import Intro from "./pages/Intro.jsx";
+import AboutLikeLion from "./pages/AboutLikeLion.jsx";
+import LikeLionInstagram from "./pages/LikeLionInstagram.jsx";
+import LikeLionHomepage from "./pages/LikeLionHomepage.jsx";
+import LikeLionPBL from "./pages/LikeLionPBL.jsx";
+import Session from "./pages/Session.jsx";
+import Profile from "./pages/Profile.jsx";
+import GenerationSelect from "./pages/GenerationSelect.jsx";
+import StaffProfile from "./pages/StaffProfile.jsx";
+import MemberProfile from "./pages/MemberProfile.jsx";
+import Projects from "./pages/Projects.jsx";
+import GenerationProjects from "./pages/GenerationProjects.jsx";
+import ProjectCardNews from "./pages/ProjectCardNews.jsx";
+import Apply from "./pages/Apply.jsx";
+import FAQ from "./pages/FAQ.jsx";
+import ApplyForm from "./pages/ApplyForm.jsx";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Admin from "./pages/Admin.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
-const items = [
-  { to: "/apply/faq", title: "FAQ", meta: "Apply" },
-  { to: "/apply/form", title: "14기 신청하기", meta: "Apply" },
-];
-
-export default function Apply() {
+export default function App() {
   return (
-    <div className="page-stack">
-      <PageHeader
-        eyebrow="Apply"
-        title="신청"
-        description="자주 묻는 질문을 확인하고, 백엔드 지원 API로 신청서를 제출할 수 있습니다."
-      />
-      <LinkGrid items={items} />
-    </div>
+    <MacShell>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/intro" element={<Intro />} />
+        <Route path="/intro/about" element={<AboutLikeLion />} />
+        <Route path="/intro/about/instagram" element={<LikeLionInstagram />} />
+        <Route path="/intro/about/homepage" element={<LikeLionHomepage />} />
+        <Route path="/intro/about/pbl" element={<LikeLionPBL />} />
+        <Route path="/session" element={<Session />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/generation" element={<GenerationSelect />} />
+        <Route path="/profile/staff" element={<StaffProfile />} />
+        <Route path="/profile/members" element={<MemberProfile />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/generation" element={<GenerationProjects />} />
+        <Route path="/projects/card-news" element={<ProjectCardNews />} />
+        <Route path="/apply" element={<Apply />} />
+        <Route path="/apply/faq" element={<FAQ />} />
+        <Route path="/apply/form" element={<ApplyForm />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </MacShell>
   );
 }
