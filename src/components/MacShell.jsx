@@ -1,4 +1,5 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   BookOpenText,
   ClipboardList,
@@ -6,9 +7,11 @@ import {
   Home,
   Info,
   LogIn,
+  LogOut,
   Search,
   UserRound,
 } from "lucide-react";
+import { clearStoredTokens, isAuthenticated, subscribeAuthChange } from "../lib/api.js";
 
 const navItems = [
   { to: "/", label: "Home", ko: "홈", icon: Home },
@@ -37,7 +40,18 @@ function getWindowTitle(pathname) {
 
 export default function MacShell({ children }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const windowTitle = getWindowTitle(pathname);
+  const [hasToken, setHasToken] = useState(isAuthenticated());
+
+  useEffect(() => subscribeAuthChange(setHasToken), []);
+
+  const handleLogout = () => {
+    clearStoredTokens();
+    if (pathname !== "/login") {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="mac-desktop">
@@ -58,7 +72,7 @@ export default function MacShell({ children }) {
           </NavLink>
 
           <nav className="sidebar-nav" aria-label="주요 메뉴">
-            {navItems.map(({ to, label, ko, icon: Icon }) => (
+            {navItems.slice(0, -1).map(({ to, label, ko, icon: Icon }) => (
               <NavLink
                 className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
                 key={to}
@@ -70,6 +84,19 @@ export default function MacShell({ children }) {
                 <small>{label}</small>
               </NavLink>
             ))}
+            {hasToken ? (
+              <button className="sidebar-link sidebar-button" type="button" onClick={handleLogout}>
+                <LogOut size={18} strokeWidth={1.8} />
+                <span>로그아웃</span>
+                <small>Logout</small>
+              </button>
+            ) : (
+              <NavLink className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`} to="/login">
+                <LogIn size={18} strokeWidth={1.8} />
+                <span>로그인</span>
+                <small>Login</small>
+              </NavLink>
+            )}
           </nav>
 
           <div className="sidebar-footer">

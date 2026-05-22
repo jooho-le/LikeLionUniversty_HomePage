@@ -24,15 +24,42 @@ function isStaffRole(role = "") {
   return /대표|운영진|staff/i.test(role);
 }
 
+function parseRoleLabel(value = "") {
+  const parts = value.split("|").map((part) => part.trim()).filter(Boolean);
+
+  if (parts.length >= 3) {
+    return {
+      role: parts[0],
+      track: parts[1],
+      detail: parts[2],
+    };
+  }
+
+  if (parts.length === 2) {
+    return {
+      role: parts[0],
+      track: parts[1],
+      detail: "전북대학교 멋쟁이사자처럼",
+    };
+  }
+
+  const label = parts[0] || "회원";
+  return {
+    role: isStaffRole(label) ? label : "회원",
+    track: isStaffRole(label) ? label : label,
+    detail: "전북대학교 멋쟁이사자처럼",
+  };
+}
+
 function mapApiMember(member) {
-  const roleLabel = member.role_label ?? "회원";
+  const parsed = parseRoleLabel(member.role_label ?? "회원");
 
   return {
     id: member.id,
     name: member.name,
-    role: isStaffRole(roleLabel) ? roleLabel : "회원",
-    track: roleLabel,
-    detail: member.joined_year ? `${member.joined_year}년 가입` : "전북대학교 멋쟁이사자처럼",
+    role: parsed.role,
+    track: parsed.track,
+    detail: parsed.detail || (member.joined_year ? `${member.joined_year}년 가입` : "전북대학교 멋쟁이사자처럼"),
     image: member.profile_image,
     github: member.github_url,
   };
@@ -87,6 +114,11 @@ export default function GenerationSelect() {
     getMembers()
       .then((members) => {
         if (!isMounted) return;
+        if (members.length === 0) {
+          setApiMembers(null);
+          setLoadMessage("DB에 등록된 멤버가 없어 로컬 예시 멤버를 보여주고 있습니다.");
+          return;
+        }
         setApiMembers(members.map(mapApiMember));
         setLoadMessage("");
       })

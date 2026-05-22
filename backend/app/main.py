@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.database import engine, Base
+from app.core.config import CORS_ORIGINS, CORS_ORIGIN_REGEX
 from app.models import *
 from app.routers import auth, users, diary, apply, members, projects, sessions
 from app.routers.admin import users as admin_users
@@ -19,15 +20,8 @@ app = FastAPI(title="JBNU - Likelion Home API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://your-username.github.io",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://192.168.1.100:5173",
-    ],
-    allow_origin_regex=r"http://192\.168\.\d+\.\d+:(5173|3000)",
+    allow_origins=CORS_ORIGINS,
+    allow_origin_regex=CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

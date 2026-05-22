@@ -1,17 +1,45 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const AUTH_STORAGE_EVENT = "likelion-auth-change";
 
 export function getStoredAccessToken() {
   return localStorage.getItem("likelionAccessToken") ?? "";
 }
 
+export function isAuthenticated() {
+  return Boolean(getStoredAccessToken());
+}
+
+export function subscribeAuthChange(callback) {
+  const handleAuthChange = () => callback(isAuthenticated());
+  const handleStorage = (event) => {
+    if (event.key === "likelionAccessToken" || event.key === "likelionRefreshToken") {
+      handleAuthChange();
+    }
+  };
+
+  window.addEventListener(AUTH_STORAGE_EVENT, handleAuthChange);
+  window.addEventListener("storage", handleStorage);
+
+  return () => {
+    window.removeEventListener(AUTH_STORAGE_EVENT, handleAuthChange);
+    window.removeEventListener("storage", handleStorage);
+  };
+}
+
+function notifyAuthChange() {
+  window.dispatchEvent(new Event(AUTH_STORAGE_EVENT));
+}
+
 export function setStoredTokens({ accessToken, refreshToken }) {
   localStorage.setItem("likelionAccessToken", accessToken);
   localStorage.setItem("likelionRefreshToken", refreshToken);
+  notifyAuthChange();
 }
 
 export function clearStoredTokens() {
   localStorage.removeItem("likelionAccessToken");
   localStorage.removeItem("likelionRefreshToken");
+  notifyAuthChange();
 }
 
 function withQuery(path, params = {}) {

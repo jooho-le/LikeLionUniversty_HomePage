@@ -46,6 +46,12 @@ API 서버는 아래 주소에서 실행됩니다.
 http://localhost:8000/
 ```
 
+멤버 프로필 초기 데이터를 DB에 넣으려면 백엔드 폴더에서 아래 명령을 실행합니다.
+
+```bash
+python -m app.seed_members
+```
+
 
 ## 빌드
 

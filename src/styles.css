@@ -193,6 +193,13 @@ button.traffic-dot {
   font-weight: 650;
 }
 
+.sidebar-button {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  text-align: left;
+}
+
 .sidebar-link svg {
   color: rgba(255, 255, 255, 0.72);
 }
@@ -1576,7 +1583,7 @@ form button,
   line-height: 1.6;
 }
 
-.session-login-link {
+.session-auth-badge {
   min-height: 38px;
   border: 1px solid rgba(0, 102, 179, 0.16);
   border-radius: 12px;
@@ -1588,6 +1595,12 @@ form button,
   background: rgba(0, 102, 179, 0.08);
   font-size: 0.84rem;
   font-weight: 840;
+}
+
+.session-auth-badge.is-logged-in {
+  border-color: rgba(15, 123, 58, 0.2);
+  color: #0f7b3a;
+  background: rgba(15, 123, 58, 0.08);
 }
 
 .session-compose-panel label {

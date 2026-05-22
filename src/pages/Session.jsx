@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { BookOpenCheck, Code2, PenTool, Plus, Server } from "lucide-react";
 import TrackBoard from "../components/TrackBoard.jsx";
-import { createDiary, getDiaries, getSessions, getStoredAccessToken } from "../lib/api.js";
+import {
+  createDiary,
+  getDiaries,
+  getSessions,
+  getStoredAccessToken,
+  isAuthenticated,
+  subscribeAuthChange,
+} from "../lib/api.js";
 
 const tracks = [
   {
@@ -140,6 +146,7 @@ export default function Session() {
   const [loadError, setLoadError] = useState("");
   const [formData, setFormData] = useState({ title: "", content: "" });
   const [formStatus, setFormStatus] = useState({ type: "", message: "" });
+  const [hasToken, setHasToken] = useState(isAuthenticated());
 
   const activeTrack = useMemo(
     () => tracks.find((track) => track.id === activeTrackId) ?? tracks[0],
@@ -171,6 +178,8 @@ export default function Session() {
   useEffect(() => {
     loadPosts();
   }, [loadPosts]);
+
+  useEffect(() => subscribeAuthChange(setHasToken), []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -260,9 +269,9 @@ export default function Session() {
             <h2>{activeTrack.label} 글 작성</h2>
             <p>작성한 글은 세션 일기 분류로 등록됩니다.</p>
           </div>
-          <Link className="session-login-link" to="/login">
-            로그인
-          </Link>
+          <span className={`session-auth-badge${hasToken ? " is-logged-in" : ""}`}>
+            {hasToken ? "로그인 완료" : "좌측 로그인 후 작성 가능"}
+          </span>
         </div>
         <label>
           <span>제목</span>
@@ -286,7 +295,7 @@ export default function Session() {
           {formStatus.message && (
             <p className={`session-form-message ${formStatus.type}`}>{formStatus.message}</p>
           )}
-          <button type="submit" disabled={formStatus.type === "loading"}>
+          <button type="submit" disabled={formStatus.type === "loading" || !hasToken}>
             <Plus size={17} strokeWidth={1.8} />
             <span>글 등록</span>
           </button>
