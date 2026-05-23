@@ -2801,6 +2801,18 @@ form button {
     grid-template-columns: 1fr;
   }
 
+  .proj-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proj-modal-team-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .proj-modal-body {
+    padding: 18px 20px 22px;
+  }
+
   .project-list-card {
     grid-template-columns: 1fr;
   }
@@ -3501,7 +3513,804 @@ form button {
   box-shadow: 0 12px 36px rgba(255, 132, 31, 0.48);
 }
 
+/* ── Projects Archive ── */
+
+/* 컴팩트 헤더 (기수별 프로젝트 페이지) */
+.proj-compact-header {
+  max-width: 720px;
+  padding: clamp(16px, 3vw, 28px) clamp(20px, 4vw, 36px);
+}
+
+.proj-compact-title {
+  margin: 6px 0 12px;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 860;
+  line-height: 1.15;
+}
+
+.proj-compact-desc {
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 0.92rem;
+  line-height: 1.72;
+  max-width: 600px;
+}
+
+/* 필터 바 — 행사 태그 왼쪽, 기수 드롭다운 오른쪽 */
+.proj-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+/* 기수 드롭다운 */
+.proj-dropdown {
+  position: relative;
+}
+
+.proj-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(23, 25, 29, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 780;
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease;
+  white-space: nowrap;
+}
+
+.proj-dropdown-trigger:hover,
+.proj-dropdown-trigger.open {
+  border-color: rgba(0, 102, 179, 0.36);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.proj-dropdown-chevron {
+  transition: transform 0.18s ease;
+}
+
+.proj-dropdown-trigger.open .proj-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.proj-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 50;
+  min-width: 120px;
+  border: 1px solid rgba(23, 25, 29, 0.1);
+  border-radius: 14px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 32px rgba(21, 25, 32, 0.13);
+  backdrop-filter: blur(12px);
+  animation: projFadeIn 0.14s ease;
+}
+
+.proj-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--soft-ink);
+  font-size: 0.86rem;
+  font-weight: 750;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.proj-dropdown-item:hover {
+  background: rgba(0, 102, 179, 0.07);
+  color: var(--ink);
+}
+
+.proj-dropdown-item.active {
+  background: rgba(0, 102, 179, 0.1);
+  color: var(--accent-strong);
+  font-weight: 840;
+}
+
+.proj-archive {
+  gap: 20px;
+}
+
+/* Preview "더보기" button on /projects */
+.proj-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-end;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 820;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: gap 0.14s ease;
+}
+
+.proj-more-link:hover {
+  gap: 8px;
+}
+
+.proj-more-btn {
+  width: 100%;
+  min-height: 44px;
+  border: 1.5px solid rgba(0, 102, 179, 0.18);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--accent);
+  background: rgba(0, 102, 179, 0.05);
+  font-size: 0.88rem;
+  font-weight: 820;
+  text-decoration: none;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.proj-more-btn:hover {
+  background: rgba(0, 102, 179, 0.1);
+  border-color: rgba(0, 102, 179, 0.3);
+}
+
+/* Static (non-clickable) preview card on /projects */
+.proj-card-static {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Register button */
+.proj-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-end;
+  height: 36px;
+  padding: 0 16px;
+  border: 1.5px solid rgba(0, 102, 179, 0.2);
+  border-radius: 999px;
+  color: var(--accent);
+  background: rgba(0, 102, 179, 0.07);
+  font-size: 0.84rem;
+  font-weight: 820;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.proj-add-btn:hover {
+  background: rgba(0, 102, 179, 0.13);
+  border-color: rgba(0, 102, 179, 0.35);
+}
+
+/* Register modal size override */
+.proj-register-modal {
+  max-width: 680px;
+}
+
+/* Register form */
+.proj-register-form {
+  display: grid;
+  gap: 14px;
+}
+
+.proj-register-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 780;
+}
+
+.proj-register-form select {
+  width: 100%;
+  border: 1px solid rgba(23, 25, 29, 0.1);
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  outline: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.proj-register-form select:focus {
+  border-color: rgba(0, 102, 179, 0.48);
+  box-shadow: 0 0 0 4px rgba(0, 102, 179, 0.12);
+}
+
+.proj-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.proj-form-row-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.proj-form-req {
+  color: #e53e3e;
+}
+
+.proj-form-divider {
+  height: 1px;
+  background: rgba(23, 25, 29, 0.08);
+}
+
+.proj-form-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.proj-form-error {
+  margin: 0;
+  color: #c53030;
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+/* ── 팀원 동적 추가 ── */
+.proj-member-section {
+  display: grid;
+  gap: 10px;
+}
+
+.proj-member-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.proj-member-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(23, 25, 29, 0.1);
+  border-radius: 12px;
+  padding: 10px 13px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.proj-member-input:focus {
+  border-color: rgba(0, 102, 179, 0.48);
+  box-shadow: 0 0 0 4px rgba(0, 102, 179, 0.12);
+}
+
+.proj-member-add-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(0, 102, 179, 0.22);
+  border-radius: 999px;
+  background: rgba(0, 102, 179, 0.07);
+  color: var(--accent);
+  font-size: 0.83rem;
+  font-weight: 820;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.proj-member-add-btn:hover {
+  background: rgba(0, 102, 179, 0.13);
+  border-color: rgba(0, 102, 179, 0.36);
+}
+
+.proj-member-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proj-member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 12px;
+  border: 1px solid rgba(23, 25, 29, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.proj-member-chip-name {
+  color: var(--ink);
+  font-size: 0.83rem;
+  font-weight: 780;
+}
+
+.proj-member-chip-role {
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 820;
+}
+
+.proj-member-chip-remove {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.proj-member-chip-remove:hover {
+  background: rgba(197, 48, 48, 0.1);
+  color: #c53030;
+}
+
+/* ── 팀원 칩 (상세 모달) ── */
+.proj-modal-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.proj-modal-member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.proj-modal-member-name {
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 780;
+}
+
+.proj-modal-member-role {
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 820;
+}
+
+.proj-filter-group {
+  display: grid;
+  gap: 8px;
+}
+
+.proj-filter-label {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 860;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.proj-modal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.proj-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.proj-filter-btn {
+  height: 36px;
+  padding: 0 18px;
+  border: 1.5px solid rgba(23, 25, 29, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--soft-ink);
+  font-size: 0.85rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.proj-filter-btn:hover {
+  border-color: rgba(0, 102, 179, 0.32);
+  color: var(--accent);
+  background: rgba(0, 102, 179, 0.06);
+}
+
+.proj-filter-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 102, 179, 0.22);
+}
+
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.proj-card {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(18px);
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.proj-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 28px 64px rgba(21, 25, 32, 0.16);
+}
+
+.proj-card-thumb {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(135deg, rgba(0, 102, 179, 0.13) 0%, rgba(200, 215, 235, 0.4) 100%);
+  display: grid;
+  place-items: center;
+  color: var(--accent-strong);
+  font-weight: 860;
+  font-size: 0.9rem;
+}
+
+.proj-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.proj-card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proj-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.proj-card-tag {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 820;
+  white-space: nowrap;
+}
+
+.proj-card-tag--gen {
+  color: var(--accent-strong);
+  background: rgba(0, 102, 179, 0.09);
+}
+
+.proj-card-tag--event {
+  color: var(--soft-ink);
+  background: rgba(23, 25, 29, 0.07);
+}
+
+.proj-card-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.02rem;
+  font-weight: 840;
+  line-height: 1.3;
+}
+
+.proj-card-desc {
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 0.83rem;
+  line-height: 1.55;
+  flex: 1;
+}
+
+@keyframes projFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes projSlideUp {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.proj-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(17, 24, 39, 0.52);
+  backdrop-filter: blur(6px);
+  animation: projFadeIn 0.22s ease;
+}
+
+.proj-modal {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  max-height: 88vh;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 28px;
+  background: rgba(248, 249, 251, 0.97);
+  box-shadow: 0 32px 80px rgba(21, 25, 32, 0.24);
+  backdrop-filter: blur(24px);
+  animation: projSlideUp 0.26s ease;
+}
+
+/* ── 이미지 캐러셀 ── */
+.proj-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 26px 26px 0 0;
+  background: linear-gradient(135deg, rgba(0, 102, 179, 0.13) 0%, rgba(200, 215, 235, 0.4) 100%);
+}
+
+.proj-carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: projFadeIn 0.22s ease;
+}
+
+.proj-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(17, 24, 39, 0.42);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background 0.14s ease;
+}
+
+.proj-carousel-btn:hover {
+  background: rgba(17, 24, 39, 0.64);
+}
+
+.proj-carousel-btn.prev { left: 12px; }
+.proj-carousel-btn.next { right: 12px; }
+
+.proj-carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.proj-carousel-dot {
+  height: 6px;
+  width: 6px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  padding: 0;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.proj-carousel-dot.active {
+  width: 20px;
+  background: #fff;
+}
+
+.proj-modal-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 26px 26px 0 0;
+  background: linear-gradient(135deg, rgba(0, 102, 179, 0.13) 0%, rgba(200, 215, 235, 0.4) 100%);
+  display: grid;
+  place-items: center;
+  color: var(--accent-strong);
+  font-weight: 880;
+  font-size: 1.1rem;
+}
+
+.proj-modal-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.proj-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--soft-ink);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 2px 8px rgba(21, 25, 32, 0.12);
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.proj-modal-close:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+.proj-modal-body {
+  padding: 22px 26px 28px;
+  display: grid;
+  gap: 16px;
+}
+
+.proj-modal-event {
+  width: max-content;
+  border-radius: 999px;
+  padding: 5px 12px;
+  color: var(--accent-strong);
+  background: rgba(0, 102, 179, 0.1);
+  font-size: 0.76rem;
+  font-weight: 840;
+}
+
+.proj-modal-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.3rem, 3vw, 1.65rem);
+  font-weight: 860;
+  line-height: 1.25;
+}
+
+.proj-modal-desc {
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 0.9rem;
+  line-height: 1.72;
+}
+
+.proj-modal-team {
+  display: grid;
+  gap: 10px;
+}
+
+.proj-modal-team-label {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 860;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.proj-modal-team-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.proj-modal-team-group {
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.proj-modal-team-role {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--accent);
+  font-size: 0.73rem;
+  font-weight: 870;
+}
+
+.proj-modal-team-names {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.proj-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.proj-modal-btn {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 0.88rem;
+  font-weight: 820;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.proj-modal-btn.github {
+  border: 1.5px solid rgba(23, 25, 29, 0.13);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.proj-modal-btn.github:hover {
+  background: rgba(23, 25, 29, 0.05);
+  border-color: rgba(23, 25, 29, 0.22);
+}
+
+.proj-modal-btn.deploy {
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 8px 20px rgba(0, 102, 179, 0.24);
+}
+
+.proj-modal-btn.deploy:hover {
+  box-shadow: 0 12px 28px rgba(0, 102, 179, 0.32);
+  transform: translateY(-1px);
+}
+
 @media (max-width: 900px) {
+  .proj-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .apply-track-grid {
     grid-template-columns: 1fr;
   }

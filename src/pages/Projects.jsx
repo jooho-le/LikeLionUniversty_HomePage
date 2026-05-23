@@ -1,44 +1,63 @@
-import { useEffect, useState } from "react";
-import { LinkGrid, PageHeader } from "../components/PageKit.jsx";
-import { getProjects } from "../lib/api.js";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { PROJECTS } from "../data/projects.js";
 
-const items = [{ to: "/projects/generation", title: "기수별 프로젝트", meta: "Project" }];
+const PREVIEW_COUNT = 3;
+
+function PreviewCard({ project }) {
+  const thumb = project.images?.[0];
+  return (
+    <div className="proj-card proj-card-static">
+      <div className="proj-card-thumb">
+        {thumb ? (
+          <img src={thumb} alt={project.title} />
+        ) : (
+          <span>{project.title}</span>
+        )}
+      </div>
+      <div className="proj-card-body">
+        <h3 className="proj-card-title">{project.title}</h3>
+        <p className="proj-card-desc">{project.subtitle}</p>
+        <div className="proj-card-tags">
+          <span className="proj-card-tag proj-card-tag--gen">{project.generation}</span>
+          <span className="proj-card-tag proj-card-tag--event">{project.event}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Projects() {
-  const [projectCount, setProjectCount] = useState(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    getProjects()
-      .then((projects) => {
-        if (isMounted) {
-          setProjectCount(projects.length);
-        }
-      })
-      .catch(() => {
-        if (isMounted) {
-          setProjectCount(null);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const preview = PROJECTS.slice(0, PREVIEW_COUNT);
 
   return (
     <div className="page-stack">
-      <PageHeader
-        eyebrow="Projects"
-        title="프로젝트"
-        description={
-          projectCount === null
-            ? "기수별 프로젝트와 카드뉴스를 확인할 수 있습니다."
-            : `현재 백엔드에 등록된 프로젝트 ${projectCount}개를 확인할 수 있습니다.`
-        }
-      />
-      <LinkGrid items={items} />
+      <section className="proj-compact-header">
+        <p className="eyebrow">Projects</p>
+        <h1 className="proj-compact-title">프로젝트</h1>
+        <p className="proj-compact-desc">
+          멋쟁이사자처럼 전북대학교의 프로젝트 아카이브입니다. 총 {PROJECTS.length}개의 프로젝트가 있습니다.
+        </p>
+      </section>
+
+      <section className="intro-section proj-archive">
+        <div className="split-heading">
+          <div className="section-heading" style={{ marginBottom: 0 }}>
+            <span>Recent</span>
+            <h2>최근 프로젝트</h2>
+          </div>
+          <Link className="proj-more-link" to="/projects/generation">
+            전체 보기
+            <ArrowRight size={15} strokeWidth={2} />
+          </Link>
+        </div>
+
+        <div className="proj-grid">
+          {preview.map((project) => (
+            <PreviewCard key={project.id} project={project} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
