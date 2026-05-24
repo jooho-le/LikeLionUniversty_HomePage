@@ -47,6 +47,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/projects" element={<Admin initialSection="projects" />} />
+        <Route path="/admin/sessions" element={<Admin initialSection="sessions" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </MacShell>

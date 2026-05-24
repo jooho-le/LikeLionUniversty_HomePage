@@ -1814,6 +1814,18 @@ button:disabled {
     transform 160ms ease;
 }
 
+.board-row-button {
+  width: 100%;
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+}
+
 .board-row:hover {
   background: rgba(0, 102, 179, 0.045);
   transform: translateX(2px);
@@ -1930,6 +1942,90 @@ button:disabled {
 .board-empty span {
   color: var(--soft-ink);
   font-size: 0.9rem;
+}
+
+.board-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 18, 24, 0.36);
+  backdrop-filter: blur(10px);
+}
+
+.board-detail-modal {
+  width: min(720px, 100%);
+  max-height: min(680px, calc(100vh - 48px));
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 18px;
+  padding: 24px;
+  display: grid;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 28px 70px rgba(21, 25, 32, 0.22);
+}
+
+.board-detail-close {
+  width: 36px;
+  height: 36px;
+  justify-self: end;
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 11px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  color: var(--soft-ink);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: none;
+}
+
+.board-detail-modal h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-weight: 860;
+  line-height: 1.25;
+}
+
+.board-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.board-detail-meta span {
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: var(--soft-ink);
+  background: rgba(23, 25, 29, 0.06);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.board-detail-modal p {
+  margin: 0;
+  color: var(--soft-ink);
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
+.board-detail-link {
+  width: max-content;
+  max-width: 100%;
+  min-height: 38px;
+  border-radius: 12px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  font-size: 0.84rem;
+  font-weight: 840;
+  text-decoration: none;
 }
 
 .profile-page,
@@ -2561,7 +2657,8 @@ form button {
 }
 
 .admin-filter-list button,
-.admin-user-actions button {
+.admin-user-actions button,
+.admin-action-link {
   min-height: 36px;
   border: 1px solid rgba(23, 25, 29, 0.08);
   border-radius: 11px;
@@ -2573,11 +2670,13 @@ form button {
   background: rgba(255, 255, 255, 0.68);
   font-size: 0.82rem;
   font-weight: 830;
+  text-decoration: none;
 }
 
 .admin-filter-list button.is-active,
 .admin-filter-list button:hover,
-.admin-user-actions button:hover {
+.admin-user-actions button:hover,
+.admin-action-link:hover {
   border-color: rgba(0, 102, 179, 0.18);
   color: #fff;
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));

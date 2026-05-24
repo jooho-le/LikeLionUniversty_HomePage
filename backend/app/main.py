@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from app.database import engine, Base
 from app.core.config import CORS_ORIGINS, CORS_ORIGIN_REGEX
@@ -17,6 +19,10 @@ from app.routers.admin import sessions as admin_sessions
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="JBNU - Likelion Home API", version="1.0.0")
+
+UPLOAD_DIR = Path(__file__).resolve().parent.parent / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

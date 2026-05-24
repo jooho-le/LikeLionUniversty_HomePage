@@ -1,6 +1,12 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 const AUTH_STORAGE_EVENT = "likelion-auth-change";
 
+export function getApiAssetUrl(path) {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 export function getStoredAccessToken() {
   return localStorage.getItem("likelionAccessToken") ?? "";
 }
@@ -68,6 +74,7 @@ async function parseResponse(response) {
 
 export async function apiRequest(path, options = {}) {
   const { token, basicAuth, headers, ...rest } = options;
+  const isFormData = rest.body instanceof FormData;
   const authorization = basicAuth
     ? `Basic ${btoa(`${basicAuth.username}:${basicAuth.password}`)}`
     : token
@@ -76,7 +83,7 @@ export async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...rest,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(authorization ? { Authorization: authorization } : {}),
       ...headers,
     },
@@ -176,6 +183,33 @@ export async function adminUpdateProject(projectId, body, basicAuth) {
 
 export async function adminDeleteProject(projectId, basicAuth) {
   return apiRequest(`/admin/projects/${projectId}`, {
+    method: "DELETE",
+    basicAuth,
+  });
+}
+
+export async function adminGetSessions() {
+  return getSessions();
+}
+
+export async function adminCreateSessionContent({ title, description, category, presenter, sessionDate, materialFile }, basicAuth) {
+  const body = new FormData();
+  body.append("title", title);
+  body.append("category", category);
+  if (description) body.append("description", description);
+  if (presenter) body.append("presenter", presenter);
+  if (sessionDate) body.append("session_date", sessionDate);
+  if (materialFile) body.append("material_file", materialFile);
+
+  return apiRequest("/admin/sessions/upload", {
+    method: "POST",
+    basicAuth,
+    body,
+  });
+}
+
+export async function adminDeleteSession(sessionId, basicAuth) {
+  return apiRequest(`/admin/sessions/${sessionId}`, {
     method: "DELETE",
     basicAuth,
   });

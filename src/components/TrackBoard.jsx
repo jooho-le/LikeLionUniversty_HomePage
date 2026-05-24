@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpenText, CalendarDays, FileText, Search } from "lucide-react";
+import { ArrowRight, BookOpenText, CalendarDays, ExternalLink, FileText, Search, X } from "lucide-react";
+import { getApiAssetUrl } from "../lib/api.js";
 
 const filters = [
   { key: "all", label: "전체" },
@@ -16,6 +17,7 @@ const typeMeta = {
 export default function TrackBoard({ title, description, posts }) {
   const [activeFilter, setActiveFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const filteredPosts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -107,7 +109,7 @@ export default function TrackBoard({ title, description, posts }) {
                 {post.to ? (
                   <ArrowRight className="board-arrow" size={19} strokeWidth={1.8} />
                 ) : (
-                  <span className="board-arrow-placeholder" aria-hidden="true" />
+                  <ArrowRight className="board-arrow" size={19} strokeWidth={1.8} />
                 )}
               </>
             );
@@ -121,9 +123,9 @@ export default function TrackBoard({ title, description, posts }) {
             }
 
             return (
-              <article className="board-row board-row-static" key={post.id}>
+              <button className="board-row board-row-button" key={post.id} type="button" onClick={() => setSelectedPost(post)}>
                 {rowContent}
-              </article>
+              </button>
             );
           })
         ) : (
@@ -133,6 +135,35 @@ export default function TrackBoard({ title, description, posts }) {
           </div>
         )}
       </div>
+
+      {selectedPost && (
+        <div className="board-detail-overlay" role="dialog" aria-modal="true" aria-label="게시글 상세" onClick={() => setSelectedPost(null)}>
+          <article className="board-detail-modal" onClick={(event) => event.stopPropagation()}>
+            <button className="board-detail-close" type="button" aria-label="닫기" onClick={() => setSelectedPost(null)}>
+              <X size={18} strokeWidth={2} />
+            </button>
+            <span className={`board-type ${selectedPost.type}`}>
+              {selectedPost.type === "diary" ? <BookOpenText size={16} strokeWidth={1.8} /> : <FileText size={16} strokeWidth={1.8} />}
+              {typeMeta[selectedPost.type]?.label ?? "게시글"}
+            </span>
+            <h3>{selectedPost.title}</h3>
+            <div className="board-detail-meta">
+              <span>{selectedPost.week}</span>
+              <span>{selectedPost.date}</span>
+              {(selectedPost.tags ?? []).map((tag) => (
+                <span key={tag}>#{tag}</span>
+              ))}
+            </div>
+            <p>{selectedPost.content || selectedPost.summary}</p>
+            {selectedPost.materialUrl && (
+              <a className="board-detail-link" href={getApiAssetUrl(selectedPost.materialUrl)} rel="noreferrer" target="_blank">
+                자료 열기
+                <ExternalLink size={15} strokeWidth={1.9} />
+              </a>
+            )}
+          </article>
+        </div>
+      )}
     </section>
   );
 }

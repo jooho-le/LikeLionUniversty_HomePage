@@ -1,15 +1,19 @@
 import { useMemo, useState } from "react";
-import { Check, FolderKanban, Pencil, Plus, RotateCcw, Save, ShieldCheck, Trash2, UserCog, UserRound, X } from "lucide-react";
+import { BookOpenCheck, Check, ExternalLink, FolderKanban, Pencil, Plus, RotateCcw, Save, ShieldCheck, Trash2, Upload, UserCog, UserRound, X } from "lucide-react";
 import { PageHeader } from "../components/PageKit.jsx";
 import {
   adminApproveUser,
+  adminCreateSessionContent,
   adminCreateProject,
+  adminDeleteSession,
   adminDeleteUser,
   adminDeleteProject,
+  adminGetSessions,
   adminGetProjects,
   adminGetUsers,
   adminUpdateProject,
   adminUpdateUser,
+  getApiAssetUrl,
 } from "../lib/api.js";
 
 const statusLabels = {
@@ -32,8 +36,15 @@ const statusFilters = [
 
 const adminSections = [
   { key: "users", label: "회원 관리" },
+  { key: "sessions", label: "세션 내용 관리" },
   { key: "projects", label: "프로젝트 관리" },
 ];
+
+const trackLabels = {
+  frontend: "프론트엔드",
+  backend: "백엔드",
+  design: "기획/디자인",
+};
 
 const EMPTY_PROJECT_FORM = {
   title: "",
@@ -42,6 +53,15 @@ const EMPTY_PROJECT_FORM = {
   github_url: "",
   demo_url: "",
   thumbnail: "",
+};
+
+const EMPTY_SESSION_FORM = {
+  title: "",
+  category: "frontend",
+  description: "",
+  presenter: "",
+  sessionDate: "",
+  materialFile: null,
 };
 
 function formatDate(value) {
@@ -74,12 +94,15 @@ export default function Admin({ initialSection = "users" }) {
   const [activeSection, setActiveSection] = useState(initialSection);
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [users, setUsers] = useState([]);
+  const [sessions, setSessions] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [sessionForm, setSessionForm] = useState(EMPTY_SESSION_FORM);
   const [projectForm, setProjectForm] = useState(EMPTY_PROJECT_FORM);
   const [editingProjectId, setEditingProjectId] = useState(null);
+  const [sessionFileInputKey, setSessionFileInputKey] = useState(0);
   const [statusFilter, setStatusFilter] = useState("pending");
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState("");
 
   const basicAuth = useMemo(
     () => ({
@@ -103,7 +126,7 @@ export default function Admin({ initialSection = "users" }) {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingAction("load-admin-data");
     setMessage({ type: "loading", text: "관리자 데이터를 불러오는 중입니다." });
 
     try {
@@ -114,13 +137,17 @@ export default function Admin({ initialSection = "users" }) {
         const data = await adminGetProjects();
         setProjects(data);
         setMessage({ type: "success", text: "프로젝트 목록을 불러왔습니다." });
+      } else if (section === "sessions") {
+        const data = await adminGetSessions();
+        setSessions(data);
+        setMessage({ type: "success", text: "세션 내용 목록을 불러왔습니다." });
       } else {
         setMessage({ type: "success", text: "회원 목록을 불러왔습니다." });
       }
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
-      setIsLoading(false);
+      setLoadingAction("");
     }
   };
 
@@ -173,13 +200,99 @@ export default function Admin({ initialSection = "users" }) {
     runUserAction(`${user.username} 삭제`, () => adminDeleteUser(user.id, basicAuth));
   };
 
+  const loadSessions = async () => {
+    if (!hasAdminCredentials) {
+      setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
+      return;
+    }
+
+    setLoadingAction("load-sessions");
+    setMessage({ type: "loading", text: "세션 내용 목록을 불러오는 중입니다." });
+
+    try {
+      await adminGetUsers(basicAuth);
+      const data = await adminGetSessions();
+      setSessions(data);
+      setMessage({ type: "success", text: "세션 내용 목록을 불러왔습니다." });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setLoadingAction("");
+    }
+  };
+
+  const resetSessionForm = () => {
+    setSessionForm(EMPTY_SESSION_FORM);
+    setSessionFileInputKey((value) => value + 1);
+  };
+
+  const handleSessionSubmit = async (event) => {
+    event.preventDefault();
+    if (!hasAdminCredentials) {
+      setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
+      return;
+    }
+    if (!sessionForm.title.trim()) {
+      setMessage({ type: "error", text: "세션 제목은 필수입니다." });
+      return;
+    }
+
+    setLoadingAction("submit-session");
+    setMessage({ type: "loading", text: "세션 내용을 등록하는 중입니다." });
+
+    try {
+      await adminCreateSessionContent(
+        {
+          title: sessionForm.title.trim(),
+          category: sessionForm.category,
+          description: sessionForm.description.trim(),
+          presenter: sessionForm.presenter.trim(),
+          sessionDate: sessionForm.sessionDate,
+          materialFile: sessionForm.materialFile,
+        },
+        basicAuth,
+      );
+      resetSessionForm();
+      const data = await adminGetSessions();
+      setSessions(data);
+      setMessage({ type: "success", text: "세션 내용을 등록했습니다." });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setLoadingAction("");
+    }
+  };
+
+  const handleDeleteSession = async (session) => {
+    const ok = window.confirm(`${session.title} 세션 내용을 삭제할까요? 이 작업은 되돌릴 수 없습니다.`);
+    if (!ok) return;
+    if (!hasAdminCredentials) {
+      setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
+      return;
+    }
+
+    setLoadingAction("delete-session");
+    setMessage({ type: "loading", text: "세션 내용을 삭제하는 중입니다." });
+
+    try {
+      await adminDeleteSession(session.id, basicAuth);
+      const data = await adminGetSessions();
+      setSessions(data);
+      setMessage({ type: "success", text: "세션 내용을 삭제했습니다." });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setLoadingAction("");
+    }
+  };
+
   const loadProjects = async () => {
     if (!hasAdminCredentials) {
       setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
       return;
     }
 
-    setIsLoading(true);
+    setLoadingAction("load-projects");
     setMessage({ type: "loading", text: "프로젝트 목록을 불러오는 중입니다." });
 
     try {
@@ -190,7 +303,7 @@ export default function Admin({ initialSection = "users" }) {
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
-      setIsLoading(false);
+      setLoadingAction("");
     }
   };
 
@@ -210,7 +323,7 @@ export default function Admin({ initialSection = "users" }) {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingAction("submit-project");
     setMessage({ type: "loading", text: editingProjectId ? "프로젝트를 수정하는 중입니다." : "프로젝트를 등록하는 중입니다." });
 
     try {
@@ -227,7 +340,7 @@ export default function Admin({ initialSection = "users" }) {
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
-      setIsLoading(false);
+      setLoadingAction("");
     }
   };
 
@@ -251,7 +364,7 @@ export default function Admin({ initialSection = "users" }) {
       return;
     }
 
-    setIsLoading(true);
+    setLoadingAction("delete-project");
     setMessage({ type: "loading", text: "프로젝트를 삭제하는 중입니다." });
 
     try {
@@ -263,7 +376,7 @@ export default function Admin({ initialSection = "users" }) {
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
-      setIsLoading(false);
+      setLoadingAction("");
     }
   };
 
@@ -299,7 +412,7 @@ export default function Admin({ initialSection = "users" }) {
             onChange={(event) => setCredentials((value) => ({ ...value, password: event.target.value }))}
           />
         </label>
-        <button type="button" disabled={isLoading} onClick={() => loadAdminData(activeSection)}>
+        <button type="button" disabled={loadingAction === "load-admin-data"} onClick={() => loadAdminData(activeSection)}>
           <ShieldCheck size={17} strokeWidth={1.8} />
           관리자 인증
         </button>
@@ -315,6 +428,7 @@ export default function Admin({ initialSection = "users" }) {
             type="button"
             onClick={() => handleSectionChange(section.key)}
           >
+            {section.key === "sessions" && <BookOpenCheck size={16} strokeWidth={1.9} />}
             {section.key === "projects" && <FolderKanban size={16} strokeWidth={1.9} />}
             {section.label}
           </button>
@@ -356,7 +470,7 @@ export default function Admin({ initialSection = "users" }) {
                   </button>
                 ))}
               </div>
-              <button className="admin-load-button" type="button" disabled={isLoading} onClick={() => loadAdminData("users")}>
+              <button className="admin-load-button" type="button" disabled={loadingAction === "load-admin-data"} onClick={() => loadAdminData("users")}>
                 <ShieldCheck size={15} strokeWidth={1.9} />
                 목록 불러오기
               </button>
@@ -415,6 +529,133 @@ export default function Admin({ initialSection = "users" }) {
         </>
       )}
 
+      {activeSection === "sessions" && (
+        <section className="admin-users-panel">
+          <div className="admin-panel-head">
+            <div>
+              <span className="eyebrow">Sessions</span>
+              <h2>세션 내용 관리</h2>
+            </div>
+            <button className="admin-load-button" type="button" disabled={loadingAction === "load-sessions"} onClick={loadSessions}>
+              <ShieldCheck size={15} strokeWidth={1.9} />
+              목록 불러오기
+            </button>
+          </div>
+
+          <form className="admin-project-form" onSubmit={handleSessionSubmit}>
+            <div className="admin-project-form-head">
+              <div>
+                <span className="eyebrow">Upload</span>
+                <h3>세션 내용 등록</h3>
+              </div>
+              <button type="button" onClick={resetSessionForm}>
+                <X size={15} strokeWidth={1.9} />
+                초기화
+              </button>
+            </div>
+
+            <label>
+              세션 제목
+              <input
+                type="text"
+                value={sessionForm.title}
+                onChange={(event) => setSessionForm((value) => ({ ...value, title: event.target.value }))}
+                placeholder="예: React 컴포넌트와 상태 관리"
+                required
+              />
+            </label>
+            <div className="admin-project-grid">
+              <label>
+                트랙
+                <select
+                  value={sessionForm.category}
+                  onChange={(event) => setSessionForm((value) => ({ ...value, category: event.target.value }))}
+                >
+                  <option value="frontend">프론트엔드</option>
+                  <option value="backend">백엔드</option>
+                  <option value="design">기획/디자인</option>
+                </select>
+              </label>
+              <label>
+                발표자
+                <input
+                  type="text"
+                  value={sessionForm.presenter}
+                  onChange={(event) => setSessionForm((value) => ({ ...value, presenter: event.target.value }))}
+                  placeholder="예: 운영진 이름"
+                />
+              </label>
+              <label>
+                세션 일시
+                <input
+                  type="datetime-local"
+                  value={sessionForm.sessionDate}
+                  onChange={(event) => setSessionForm((value) => ({ ...value, sessionDate: event.target.value }))}
+                />
+              </label>
+              <label>
+                자료 파일
+                <input
+                  key={sessionFileInputKey}
+                  type="file"
+                  accept=".pdf,.ppt,.pptx,.doc,.docx,.hwp,.hwpx,.txt,.md,.zip,.png,.jpg,.jpeg"
+                  onChange={(event) =>
+                    setSessionForm((value) => ({ ...value, materialFile: event.target.files?.[0] ?? null }))
+                  }
+                />
+              </label>
+            </div>
+            <label>
+              세션 설명
+              <textarea
+                rows={4}
+                value={sessionForm.description}
+                onChange={(event) => setSessionForm((value) => ({ ...value, description: event.target.value }))}
+                placeholder="세션에서 다루는 내용과 자료 설명을 입력합니다."
+              />
+            </label>
+            <button className="admin-primary-button" type="submit" disabled={loadingAction === "submit-session"}>
+              <Upload size={16} strokeWidth={1.9} />
+              세션 내용 등록
+            </button>
+          </form>
+
+          <div className="admin-user-list">
+            {sessions.length > 0 ? (
+              sessions.map((session) => (
+                <article className="admin-user-card" key={session.id}>
+                  <div className="admin-user-main">
+                    <span className="admin-status-pill">{trackLabels[session.category] ?? session.category}</span>
+                    <h3>{session.title}</h3>
+                    <p>{session.description || "설명 없음"}</p>
+                    <div className="admin-user-meta">
+                      {session.presenter && <span>{session.presenter}</span>}
+                      {session.material_url && <span>자료 있음</span>}
+                      <span>{formatDate(session.session_date ?? session.created_at)}</span>
+                    </div>
+                  </div>
+
+                  <div className="admin-user-actions">
+                    {session.material_url && (
+                      <a className="admin-action-link" href={getApiAssetUrl(session.material_url)} rel="noreferrer" target="_blank">
+                        <ExternalLink size={15} strokeWidth={1.9} />
+                        자료
+                      </a>
+                    )}
+                    <button className="danger" type="button" onClick={() => handleDeleteSession(session)}>
+                      <Trash2 size={15} strokeWidth={1.9} />
+                      삭제
+                    </button>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <p className="admin-empty">등록된 세션 내용이 없습니다.</p>
+            )}
+          </div>
+        </section>
+      )}
+
       {activeSection === "projects" && (
         <section className="admin-users-panel">
           <div className="admin-panel-head">
@@ -422,7 +663,7 @@ export default function Admin({ initialSection = "users" }) {
               <span className="eyebrow">Projects</span>
               <h2>프로젝트 관리</h2>
             </div>
-            <button className="admin-load-button" type="button" disabled={isLoading} onClick={loadProjects}>
+            <button className="admin-load-button" type="button" disabled={loadingAction === "load-projects"} onClick={loadProjects}>
               <ShieldCheck size={15} strokeWidth={1.9} />
               목록 불러오기
             </button>
@@ -499,7 +740,7 @@ export default function Admin({ initialSection = "users" }) {
                 />
               </label>
             </div>
-            <button className="admin-primary-button" type="submit" disabled={isLoading}>
+            <button className="admin-primary-button" type="submit" disabled={loadingAction === "submit-project"}>
               {editingProjectId ? <Save size={16} strokeWidth={1.9} /> : <Plus size={16} strokeWidth={1.9} />}
               {editingProjectId ? "수정 저장" : "프로젝트 등록"}
             </button>
