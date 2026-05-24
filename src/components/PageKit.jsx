@@ -67,7 +67,6 @@ function LinkedWindowCard({ to, title, meta, external }) {
           <div>
             <span className="card-meta">{meta}</span>
             <h2>{title}</h2>
-            <p>??</p>
           </div>
           {external ? <ExternalLink size={20} /> : <ArrowRight size={20} />}
         </Link>
@@ -76,12 +75,12 @@ function LinkedWindowCard({ to, title, meta, external }) {
   );
 }
 
-export function PageHeader({ eyebrow, title, description = "??" }) {
+export function PageHeader({ eyebrow, title, description = "" }) {
   return (
     <section className="page-header">
       <p className="eyebrow">{eyebrow}</p>
       <h1>{title}</h1>
-      <p className="lead">{description}</p>
+      {description && <p className="lead">{description}</p>}
     </section>
   );
 }

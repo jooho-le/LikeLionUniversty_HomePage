@@ -1,10 +1,14 @@
 import { useMemo, useState } from "react";
-import { Check, RotateCcw, ShieldCheck, Trash2, UserCog, UserRound, X } from "lucide-react";
+import { Check, FolderKanban, Pencil, Plus, RotateCcw, Save, ShieldCheck, Trash2, UserCog, UserRound, X } from "lucide-react";
 import { PageHeader } from "../components/PageKit.jsx";
 import {
   adminApproveUser,
+  adminCreateProject,
   adminDeleteUser,
+  adminDeleteProject,
+  adminGetProjects,
   adminGetUsers,
+  adminUpdateProject,
   adminUpdateUser,
 } from "../lib/api.js";
 
@@ -26,6 +30,20 @@ const statusFilters = [
   { key: "rejected", label: "거절" },
 ];
 
+const adminSections = [
+  { key: "users", label: "회원 관리" },
+  { key: "projects", label: "프로젝트 관리" },
+];
+
+const EMPTY_PROJECT_FORM = {
+  title: "",
+  description: "",
+  tech_stack: "",
+  github_url: "",
+  demo_url: "",
+  thumbnail: "",
+};
+
 function formatDate(value) {
   if (!value) return "날짜 없음";
 
@@ -41,9 +59,24 @@ function formatDate(value) {
   }).format(date);
 }
 
-export default function Admin() {
+function normalizeProjectForm(form) {
+  return {
+    title: form.title.trim(),
+    description: form.description.trim() || null,
+    tech_stack: form.tech_stack.trim() || null,
+    github_url: form.github_url.trim() || null,
+    demo_url: form.demo_url.trim() || null,
+    thumbnail: form.thumbnail.trim() || null,
+  };
+}
+
+export default function Admin({ initialSection = "users" }) {
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [users, setUsers] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [projectForm, setProjectForm] = useState(EMPTY_PROJECT_FORM);
+  const [editingProjectId, setEditingProjectId] = useState(null);
   const [statusFilter, setStatusFilter] = useState("pending");
   const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
@@ -62,25 +95,38 @@ export default function Admin() {
   }, [statusFilter, users]);
 
   const pendingCount = users.filter((user) => user.status === "pending").length;
+  const hasAdminCredentials = Boolean(basicAuth.username && basicAuth.password);
 
-  const loadUsers = async () => {
+  const loadAdminData = async (section = activeSection) => {
     if (!basicAuth.username || !basicAuth.password) {
       setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
       return;
     }
 
     setIsLoading(true);
-    setMessage({ type: "loading", text: "회원 목록을 불러오는 중입니다." });
+    setMessage({ type: "loading", text: "관리자 데이터를 불러오는 중입니다." });
 
     try {
-      const data = await adminGetUsers(basicAuth);
-      setUsers(data);
-      setMessage({ type: "success", text: "회원 목록을 불러왔습니다." });
+      const userData = await adminGetUsers(basicAuth);
+      setUsers(userData);
+
+      if (section === "projects") {
+        const data = await adminGetProjects();
+        setProjects(data);
+        setMessage({ type: "success", text: "프로젝트 목록을 불러왔습니다." });
+      } else {
+        setMessage({ type: "success", text: "회원 목록을 불러왔습니다." });
+      }
     } catch (error) {
       setMessage({ type: "error", text: error.message });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+    setMessage({ type: "", text: "" });
   };
 
   const runUserAction = async (label, action) => {
@@ -127,6 +173,100 @@ export default function Admin() {
     runUserAction(`${user.username} 삭제`, () => adminDeleteUser(user.id, basicAuth));
   };
 
+  const loadProjects = async () => {
+    if (!hasAdminCredentials) {
+      setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage({ type: "loading", text: "프로젝트 목록을 불러오는 중입니다." });
+
+    try {
+      await adminGetUsers(basicAuth);
+      const data = await adminGetProjects();
+      setProjects(data);
+      setMessage({ type: "success", text: "프로젝트 목록을 불러왔습니다." });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetProjectForm = () => {
+    setProjectForm(EMPTY_PROJECT_FORM);
+    setEditingProjectId(null);
+  };
+
+  const handleProjectSubmit = async (event) => {
+    event.preventDefault();
+    if (!hasAdminCredentials) {
+      setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
+      return;
+    }
+    if (!projectForm.title.trim()) {
+      setMessage({ type: "error", text: "프로젝트 제목은 필수입니다." });
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage({ type: "loading", text: editingProjectId ? "프로젝트를 수정하는 중입니다." : "프로젝트를 등록하는 중입니다." });
+
+    try {
+      const body = normalizeProjectForm(projectForm);
+      if (editingProjectId) {
+        await adminUpdateProject(editingProjectId, body, basicAuth);
+      } else {
+        await adminCreateProject(body, basicAuth);
+      }
+      resetProjectForm();
+      const data = await adminGetProjects();
+      setProjects(data);
+      setMessage({ type: "success", text: editingProjectId ? "프로젝트를 수정했습니다." : "프로젝트를 등록했습니다." });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProjectId(project.id);
+    setProjectForm({
+      title: project.title ?? "",
+      description: project.description ?? "",
+      tech_stack: project.tech_stack ?? "",
+      github_url: project.github_url ?? "",
+      demo_url: project.demo_url ?? "",
+      thumbnail: project.thumbnail ?? "",
+    });
+  };
+
+  const handleDeleteProject = async (project) => {
+    const ok = window.confirm(`${project.title} 프로젝트를 삭제할까요? 이 작업은 되돌릴 수 없습니다.`);
+    if (!ok) return;
+    if (!hasAdminCredentials) {
+      setMessage({ type: "error", text: "관리자 아이디와 비밀번호를 입력해주세요." });
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage({ type: "loading", text: "프로젝트를 삭제하는 중입니다." });
+
+    try {
+      await adminDeleteProject(project.id, basicAuth);
+      if (editingProjectId === project.id) resetProjectForm();
+      const data = await adminGetProjects();
+      setProjects(data);
+      setMessage({ type: "success", text: "프로젝트를 삭제했습니다." });
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="admin-page">
       <PageHeader
@@ -159,30 +299,46 @@ export default function Admin() {
             onChange={(event) => setCredentials((value) => ({ ...value, password: event.target.value }))}
           />
         </label>
-        <button type="button" disabled={isLoading} onClick={loadUsers}>
+        <button type="button" disabled={isLoading} onClick={() => loadAdminData(activeSection)}>
           <ShieldCheck size={17} strokeWidth={1.8} />
-          회원 목록 불러오기
+          관리자 인증
         </button>
       </section>
 
       {message.text && <p className={`session-form-message admin-message ${message.type}`}>{message.text}</p>}
 
-      <section className="admin-summary-grid" aria-label="회원 관리 요약">
-        <article>
-          <span>전체 회원</span>
-          <strong>{users.length}</strong>
-        </article>
-        <article>
-          <span>승인 대기</span>
-          <strong>{pendingCount}</strong>
-        </article>
-        <article>
-          <span>운영진</span>
-          <strong>{users.filter((user) => user.role === "staff").length}</strong>
-        </article>
+      <section className="admin-tabs" aria-label="관리자 메뉴">
+        {adminSections.map((section) => (
+          <button
+            className={activeSection === section.key ? "is-active" : ""}
+            key={section.key}
+            type="button"
+            onClick={() => handleSectionChange(section.key)}
+          >
+            {section.key === "projects" && <FolderKanban size={16} strokeWidth={1.9} />}
+            {section.label}
+          </button>
+        ))}
       </section>
 
-      <section className="admin-users-panel">
+      {activeSection === "users" && (
+        <>
+          <section className="admin-summary-grid" aria-label="회원 관리 요약">
+            <article>
+              <span>전체 회원</span>
+              <strong>{users.length}</strong>
+            </article>
+            <article>
+              <span>승인 대기</span>
+              <strong>{pendingCount}</strong>
+            </article>
+            <article>
+              <span>운영진</span>
+              <strong>{users.filter((user) => user.role === "staff").length}</strong>
+            </article>
+          </section>
+
+          <section className="admin-users-panel">
         <div className="admin-panel-head">
           <div>
             <span className="eyebrow">Users</span>
@@ -197,9 +353,13 @@ export default function Admin() {
                 onClick={() => setStatusFilter(filter.key)}
               >
                 {filter.label}
+                  </button>
+                ))}
+              </div>
+              <button className="admin-load-button" type="button" disabled={isLoading} onClick={() => loadAdminData("users")}>
+                <ShieldCheck size={15} strokeWidth={1.9} />
+                목록 불러오기
               </button>
-            ))}
-          </div>
         </div>
 
         <div className="admin-user-list">
@@ -251,7 +411,134 @@ export default function Admin() {
             <p className="admin-empty">조건에 맞는 회원이 없습니다.</p>
           )}
         </div>
-      </section>
+          </section>
+        </>
+      )}
+
+      {activeSection === "projects" && (
+        <section className="admin-users-panel">
+          <div className="admin-panel-head">
+            <div>
+              <span className="eyebrow">Projects</span>
+              <h2>프로젝트 관리</h2>
+            </div>
+            <button className="admin-load-button" type="button" disabled={isLoading} onClick={loadProjects}>
+              <ShieldCheck size={15} strokeWidth={1.9} />
+              목록 불러오기
+            </button>
+          </div>
+
+          <form className="admin-project-form" onSubmit={handleProjectSubmit}>
+            <div className="admin-project-form-head">
+              <div>
+                <span className="eyebrow">{editingProjectId ? "Edit" : "Create"}</span>
+                <h3>{editingProjectId ? "프로젝트 수정" : "프로젝트 등록"}</h3>
+              </div>
+              {editingProjectId && (
+                <button type="button" onClick={resetProjectForm}>
+                  <X size={15} strokeWidth={1.9} />
+                  취소
+                </button>
+              )}
+            </div>
+
+            <label>
+              프로젝트 제목
+              <input
+                type="text"
+                value={projectForm.title}
+                onChange={(event) => setProjectForm((value) => ({ ...value, title: event.target.value }))}
+                placeholder="예: 로컬마켓"
+                required
+              />
+            </label>
+            <label>
+              상세 설명
+              <textarea
+                rows={4}
+                value={projectForm.description}
+                onChange={(event) => setProjectForm((value) => ({ ...value, description: event.target.value }))}
+                placeholder="프로젝트 목적, 주요 기능, 성과를 입력합니다."
+              />
+            </label>
+            <div className="admin-project-grid">
+              <label>
+                기술 스택
+                <input
+                  type="text"
+                  value={projectForm.tech_stack}
+                  onChange={(event) => setProjectForm((value) => ({ ...value, tech_stack: event.target.value }))}
+                  placeholder="React, FastAPI, PostgreSQL"
+                />
+              </label>
+              <label>
+                썸네일 URL
+                <input
+                  type="url"
+                  value={projectForm.thumbnail}
+                  onChange={(event) => setProjectForm((value) => ({ ...value, thumbnail: event.target.value }))}
+                  placeholder="https://..."
+                />
+              </label>
+              <label>
+                GitHub URL
+                <input
+                  type="url"
+                  value={projectForm.github_url}
+                  onChange={(event) => setProjectForm((value) => ({ ...value, github_url: event.target.value }))}
+                  placeholder="https://github.com/..."
+                />
+              </label>
+              <label>
+                Demo URL
+                <input
+                  type="url"
+                  value={projectForm.demo_url}
+                  onChange={(event) => setProjectForm((value) => ({ ...value, demo_url: event.target.value }))}
+                  placeholder="https://..."
+                />
+              </label>
+            </div>
+            <button className="admin-primary-button" type="submit" disabled={isLoading}>
+              {editingProjectId ? <Save size={16} strokeWidth={1.9} /> : <Plus size={16} strokeWidth={1.9} />}
+              {editingProjectId ? "수정 저장" : "프로젝트 등록"}
+            </button>
+          </form>
+
+          <div className="admin-user-list">
+            {projects.length > 0 ? (
+              projects.map((project) => (
+                <article className="admin-user-card" key={project.id}>
+                  <div className="admin-user-main">
+                    <span className="admin-status-pill">{project.tech_stack || "기술 스택 없음"}</span>
+                    <h3>{project.title}</h3>
+                    <p>{project.description || "설명 없음"}</p>
+                    <div className="admin-user-meta">
+                      {project.github_url && <span>GitHub</span>}
+                      {project.demo_url && <span>Demo</span>}
+                      {project.thumbnail && <span>Thumbnail</span>}
+                      <span>{formatDate(project.created_at)}</span>
+                    </div>
+                  </div>
+
+                  <div className="admin-user-actions">
+                    <button type="button" onClick={() => handleEditProject(project)}>
+                      <Pencil size={15} strokeWidth={1.9} />
+                      수정
+                    </button>
+                    <button className="danger" type="button" onClick={() => handleDeleteProject(project)}>
+                      <Trash2 size={15} strokeWidth={1.9} />
+                      삭제
+                    </button>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <p className="admin-empty">등록된 프로젝트가 없습니다.</p>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

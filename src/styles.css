@@ -2444,13 +2444,52 @@ form button {
   backdrop-filter: blur(18px);
 }
 
+.admin-tabs {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 12px 28px rgba(21, 25, 32, 0.08);
+}
+
+.admin-tabs button,
+.admin-load-button,
+.admin-primary-button,
+.admin-project-form-head button {
+  min-height: 38px;
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 11px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--soft-ink);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.84rem;
+  font-weight: 840;
+}
+
+.admin-tabs button.is-active,
+.admin-tabs button:hover,
+.admin-load-button:hover,
+.admin-primary-button {
+  border-color: rgba(0, 102, 179, 0.18);
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+}
+
 .admin-auth-panel {
   grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.8fr) minmax(180px, 0.8fr) auto;
   align-items: end;
 }
 
 .admin-auth-panel h2,
-.admin-panel-head h2 {
+.admin-panel-head h2,
+.admin-project-form h3 {
   margin: 7px 0 6px;
   color: var(--ink);
   font-size: clamp(1.35rem, 2.4vw, 1.85rem);
@@ -2547,6 +2586,45 @@ form button {
 .admin-user-list {
   display: grid;
   gap: 12px;
+}
+
+.admin-project-form {
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.admin-project-form-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.admin-project-form label {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 820;
+}
+
+.admin-project-form textarea {
+  resize: vertical;
+}
+
+.admin-project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-primary-button {
+  width: max-content;
 }
 
 .admin-user-card {
@@ -2698,7 +2776,8 @@ form button {
 
   .profile-stat-row,
   .member-grid,
-  .admin-summary-grid {
+  .admin-summary-grid,
+  .admin-project-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -2797,7 +2876,8 @@ form button {
   .project-list-grid,
   .profile-stat-row,
   .member-grid,
-  .admin-summary-grid {
+  .admin-summary-grid,
+  .admin-project-grid {
     grid-template-columns: 1fr;
   }
 

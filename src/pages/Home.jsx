@@ -1,5 +1,13 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Info, FolderKanban, UserRound, ClipboardList } from "lucide-react";
+import { getMembers, getProjects, getSessions } from "../lib/api.js";
+
+const fallbackStatus = {
+  session: 14,
+  members: 48,
+  projects: 30,
+  awards: 5,
+};
 
 // const homeLinks = [
 //   { to: "/intro", label: "소개", sub: "About", icon: Info },
@@ -9,6 +17,27 @@ import { Info, FolderKanban, UserRound, ClipboardList } from "lucide-react";
 // ];
 
 export default function Home() {
+  const [status, setStatus] = useState(fallbackStatus);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    Promise.allSettled([getSessions(), getMembers(), getProjects()]).then((results) => {
+      if (!isMounted) return;
+
+      setStatus((current) => ({
+        ...current,
+        session: results[0].status === "fulfilled" ? results[0].value.length : current.session,
+        members: results[1].status === "fulfilled" ? results[1].value.length : current.members,
+        projects: results[2].status === "fulfilled" ? results[2].value.length : current.projects,
+      }));
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <>
     <section className="file-home-hero" aria-label="전북대학교 멋쟁이사자처럼 홈 인트로">
@@ -62,10 +91,10 @@ export default function Home() {
           <p className="terminal-comment"># 전북대 멋사 현황</p>
           <p><span className="terminal-command">cat status.json</span></p>
           <code>{'{'}</code>
-          <code>&nbsp;&nbsp;<span>"season"</span> : <b>14</b>,</code>
-          <code>&nbsp;&nbsp;<span>"members"</span>: <b>48</b>,</code>
-          <code>&nbsp;&nbsp;<span>"projects"</span>: <b>30</b>,</code>
-          <code>&nbsp;&nbsp;<span>"awards"</span> : <b>5</b>,</code>
+          <code>&nbsp;&nbsp;<span>"session"</span> : <b>{status.session}</b>,</code>
+          <code>&nbsp;&nbsp;<span>"members"</span>: <b>{status.members}</b>,</code>
+          <code>&nbsp;&nbsp;<span>"projects"</span>: <b>{status.projects}</b>,</code>
+          <code>&nbsp;&nbsp;<span>"awards"</span> : <b>{status.awards}</b>,</code>
           <code>&nbsp;&nbsp;<span>"status"</span> : <em>"ACTIVE"</em></code>
           <code>{'}'}</code>
           <p><span className="terminal-command">git log --oneline -3</span></p>

@@ -153,6 +153,34 @@ export async function getProject(projectId) {
   return apiRequest(`/projects/${projectId}`);
 }
 
+export async function adminGetProjects() {
+  const projects = await getProjects();
+  return Promise.all(projects.map((project) => getProject(project.id)));
+}
+
+export async function adminCreateProject(body, basicAuth) {
+  return apiRequest("/admin/projects", {
+    method: "POST",
+    basicAuth,
+    body: JSON.stringify(body),
+  });
+}
+
+export async function adminUpdateProject(projectId, body, basicAuth) {
+  return apiRequest(`/admin/projects/${projectId}`, {
+    method: "PATCH",
+    basicAuth,
+    body: JSON.stringify(body),
+  });
+}
+
+export async function adminDeleteProject(projectId, basicAuth) {
+  return apiRequest(`/admin/projects/${projectId}`, {
+    method: "DELETE",
+    basicAuth,
+  });
+}
+
 export async function createApplication({ name, email, phone, motivation }) {
   return apiRequest("/apply", {
     method: "POST",
