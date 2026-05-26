@@ -6,8 +6,8 @@ import { getProject, getProjects } from "../lib/api.js";
 const fallbackProjects = [
   {
     id: "example-1",
-    title: "프로젝트 카드뉴스 예시",
-    description: "백엔드 API 연결 전 표시되는 예시 프로젝트입니다.",
+    title: "프로젝트 카드뉴스",
+    description: "프로젝트 소개를 준비 중입니다.",
     tech_stack: "React, FastAPI",
     github_url: "",
     demo_url: "",
@@ -72,7 +72,6 @@ function ProjectCardWindow({ project, index }) {
 
 export default function ProjectCardNews() {
   const [projects, setProjects] = useState(fallbackProjects);
-  const [loadMessage, setLoadMessage] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -82,12 +81,10 @@ export default function ProjectCardNews() {
         const detailedProjects = await Promise.all(items.map((item) => getProject(item.id)));
         if (!isMounted) return;
         setProjects(detailedProjects);
-        setLoadMessage("");
       })
       .catch(() => {
         if (!isMounted) return;
         setProjects(fallbackProjects);
-        setLoadMessage("백엔드 API 연결 전이라 예시 카드뉴스를 보여주고 있습니다.");
       });
 
     return () => {
@@ -101,9 +98,8 @@ export default function ProjectCardNews() {
       <PageHeader
         eyebrow="Card News"
         title="프로젝트 카드뉴스"
-        description="백엔드 프로젝트 API에서 제목, 설명, 썸네일, 링크를 불러와 카드뉴스로 보여줍니다."
+        description="전북대학교 멋쟁이사자처럼의 프로젝트를 카드뉴스 형식으로 소개합니다."
       />
-      {loadMessage && <p className="session-api-message">{loadMessage}</p>}
       <section className="card-news-grid" aria-label="프로젝트 카드뉴스">
         {projects.length > 0 ? (
           projects.map((project, index) => (

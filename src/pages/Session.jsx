@@ -39,19 +39,19 @@ const fallbackPosts = {
     {
       id: "frontend-content-example",
       type: "content",
-      title: "프론트엔드 세션 내용 예시",
+      title: "프론트엔드 세션 내용",
       summary: "React 기반 UI 구조와 컴포넌트 설계 흐름을 정리한 세션 자료입니다.",
       week: "세션",
-      date: "예시",
+      date: "준비중",
       tags: ["Frontend", "React"],
     },
     {
       id: "frontend-diary-example",
       type: "diary",
-      title: "프론트엔드 세션 일기 예시",
+      title: "프론트엔드 세션 일기",
       summary: "첫 화면을 만들고 팀원들과 리뷰한 내용을 기록합니다.",
       week: "일기",
-      date: "예시",
+      date: "준비중",
       tags: ["Frontend", "Diary"],
     },
   ],
@@ -59,19 +59,19 @@ const fallbackPosts = {
     {
       id: "backend-content-example",
       type: "content",
-      title: "백엔드 세션 내용 예시",
-      summary: "API, 데이터베이스, 인증 흐름을 다룬 백엔드 세션 자료 예시입니다.",
+      title: "백엔드 세션 내용",
+      summary: "API, 데이터베이스, 인증 흐름을 다룬 백엔드 세션 자료입니다.",
       week: "세션",
-      date: "예시",
+      date: "준비중",
       tags: ["Backend", "API"],
     },
     {
       id: "backend-diary-example",
       type: "diary",
-      title: "백엔드 세션 일기 예시",
+      title: "백엔드 세션 일기",
       summary: "서버 요청과 응답 흐름을 실습하며 배운 점을 기록합니다.",
       week: "일기",
-      date: "예시",
+      date: "준비중",
       tags: ["Backend", "Diary"],
     },
   ],
@@ -79,19 +79,19 @@ const fallbackPosts = {
     {
       id: "design-content-example",
       type: "content",
-      title: "기획/디자인 세션 내용 예시",
+      title: "기획/디자인 세션 내용",
       summary: "문제 정의부터 와이어프레임, 프로토타입까지의 흐름을 정리한 자료입니다.",
       week: "세션",
-      date: "예시",
+      date: "준비중",
       tags: ["Design", "Figma"],
     },
     {
       id: "design-diary-example",
       type: "diary",
-      title: "기획/디자인 세션 일기 예시",
+      title: "기획/디자인 세션 일기",
       summary: "사용자 문제를 찾고 화면 흐름으로 바꿔본 과정을 기록합니다.",
       week: "일기",
-      date: "예시",
+      date: "준비중",
       tags: ["Design", "Diary"],
     },
   ],
@@ -146,7 +146,6 @@ export default function Session() {
   const [activeTrackId, setActiveTrackId] = useState(tracks[0].id);
   const [posts, setPosts] = useState(fallbackPosts[tracks[0].id]);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadError, setLoadError] = useState("");
   const [formData, setFormData] = useState({ title: "", content: "" });
   const [formStatus, setFormStatus] = useState({ type: "", message: "" });
   const [hasToken, setHasToken] = useState(isAuthenticated());
@@ -159,7 +158,6 @@ export default function Session() {
 
   const loadPosts = useCallback(async () => {
     setIsLoading(true);
-    setLoadError("");
 
     try {
       const [sessions, diaries] = await Promise.all([
@@ -172,7 +170,6 @@ export default function Session() {
       ]);
     } catch (error) {
       setPosts(fallbackPosts[activeTrack.id]);
-      setLoadError("백엔드 API 연결 전이라 예시 게시글을 보여주고 있습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -304,8 +301,6 @@ export default function Session() {
           </button>
         </div>
       </form>
-
-      {loadError && <p className="session-api-message">{loadError}</p>}
 
       <TrackBoard
         key={activeTrack.id}

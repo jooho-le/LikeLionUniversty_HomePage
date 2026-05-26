@@ -106,7 +106,6 @@ function MemberSection({ eyebrow, title, people }) {
 
 export default function GenerationSelect() {
   const [apiMembers, setApiMembers] = useState(null);
-  const [loadMessage, setLoadMessage] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -116,16 +115,13 @@ export default function GenerationSelect() {
         if (!isMounted) return;
         if (members.length === 0) {
           setApiMembers(null);
-          setLoadMessage("DB에 등록된 멤버가 없어 로컬 예시 멤버를 보여주고 있습니다.");
           return;
         }
         setApiMembers(members.map(mapApiMember));
-        setLoadMessage("");
       })
       .catch(() => {
         if (!isMounted) return;
         setApiMembers(null);
-        setLoadMessage("백엔드 API 연결 전이라 로컬 예시 멤버를 보여주고 있습니다.");
       });
 
     return () => {
@@ -152,7 +148,6 @@ export default function GenerationSelect() {
         title="14기 멤버"
         description="전북대 멋쟁이사자 14기의 운영진과 회원 아기사자들입니다."
       />
-      {loadMessage && <p className="session-api-message">{loadMessage}</p>}
       <MemberSection eyebrow="Staff" people={staff} title="운영진" />
       <MemberSection eyebrow="Members" people={members} title="회원" />
     </div>
